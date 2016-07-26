@@ -4,11 +4,19 @@
  */
 function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_info, $settings) {
 
+  dpm('Starting Variables and Arrays');
+  dpm($element);
+  dpm($tag_info);
+  dpm($settings);
+  
   $file = $tag_info['file'];
   if (!empty($settings['wysiwyg']) || empty($file) || 'image' != $file->type) {
     return;
   }
   $wrapper = entity_metadata_wrapper('file', $file);
+
+  dpm('Starting Variables and Arrays');
+  dpm($wrapper);
 
   $styles = $wrapper->field_alignment->value();
   if (!empty($styles)) {
@@ -17,6 +25,7 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
     }
   }
 
+  dpm('Ending Variables and Arrays');
   dpm($element);
   dpm($styles);
   
