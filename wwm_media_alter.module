@@ -15,6 +15,11 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
   if (!empty($style)) {
     $element['content']['#attributes']['class'][] = $style;
   }
+
+  $element['content']['#prefix'] = '<p>';
+  $element['content']['#suffix'] = '</p>';
+
+  dpm($element);
   
   // $link = $wrapper->field_myimagelinkfield->value();
   // if (!empty($link['url'])) {
