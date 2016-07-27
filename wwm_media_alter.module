@@ -16,8 +16,7 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
     $element['content']['#attributes']['class'][] = $style;
   }
 
-  $element['content']['#prefix'] = '<p>';
-  $element['content']['#suffix'] = '</p>';
+  unset($element['content']['#type']);
 
   dpm($element);
   
