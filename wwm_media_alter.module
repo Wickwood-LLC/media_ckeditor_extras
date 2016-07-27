@@ -16,8 +16,6 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
     $element['content']['#attributes']['class'][] = $style;
   }
 
-  unset($element['content']['#type']);
-
   dpm($element);
   
   // $link = $wrapper->field_myimagelinkfield->value();
