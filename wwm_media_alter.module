@@ -27,7 +27,8 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
   dpm('Settings after:');
   dpm($settings);
 
-  // dpm($element);
+  dpm('Element');
+  dpm($element);
   
   // $link = $wrapper->field_myimagelinkfield->value();
   // if (!empty($link['url'])) {
