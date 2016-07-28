@@ -29,19 +29,20 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
 }
 
 function wwm_media_alter_hook_media_token_to_markup_alter(&$element, $tag_info, $settings) {
+  $element['#attributes']['class'][] = 'align-center';
   dpm($element);
 
-  $file = $tag_info['file'];
-  if (!empty($settings['wysiwyg']) || empty($file) || 'image' != $file->type) {
-    return;
-  }
-  $wrapper = entity_metadata_wrapper('file', $file);
+  // $file = $tag_info['file'];
+  // if (!empty($settings['wysiwyg']) || empty($file) || 'image' != $file->type) {
+  //   return;
+  // }
+  // $wrapper = entity_metadata_wrapper('file', $file);
 
-  $style = $wrapper->field_alignment->value();
+  // $style = $wrapper->field_alignment->value();
 
-  if (!empty($style)) {
-    // foreach ($styles as $style) {
-      $element['#attributes']['class'][] = 'align-center';
-    // }
-  }
+  // if (!empty($style)) {
+  //   // foreach ($styles as $style) {
+  //     $element['#attributes']['class'][] = 'align-center';
+  //   // }
+  // }
 }
