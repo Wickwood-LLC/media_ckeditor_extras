@@ -18,7 +18,7 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
     // }
   }
 
-  dpm($element);
+  // dpm($element);
   
   // $link = $wrapper->field_myimagelinkfield->value();
   // if (!empty($link['url'])) {
@@ -41,7 +41,7 @@ function wwm_media_alter_hook_media_token_to_markup_alter(&$element, $tag_info, 
 
   if (!empty($style)) {
     // foreach ($styles as $style) {
-      $element['content']['#attributes']['class'][] = $style;
+      $element['#attributes']['class'][] = 'align-center';
     // }
   }
 }
