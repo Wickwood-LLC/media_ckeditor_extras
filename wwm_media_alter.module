@@ -18,8 +18,8 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
     // }
   }
 
-  dpm($tag_info);
-  dpm($settings);
+  dpm('Tag info:' . $tag_info);
+  dpm('Settings:' . $settings);
     $settings['attributes']['class'][] = 'align-center';
 
   // dpm($element);
