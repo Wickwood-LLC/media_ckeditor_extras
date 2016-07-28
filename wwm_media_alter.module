@@ -12,11 +12,25 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
     dpm($tag_info);
     dpm('Settings:');
     dpm($settings);
+
+    // If sending markup to a WYSIWYG, we need to pass the file information so
+    // that an inline macro can be generated when the WYSIWYG is detached.
+    // The WYSIWYG plugin is expecting this information in the
+    // Drupal.settings.mediaDataMap variable.
+    $element = media_wysiwyg_get_file_without_label($file, $tag_info['view_mode'], $settings);
+    $data = array(
+      'type' => 'media',
+      'fid'  => $file->fid,
+      'view_mode' => $tag_info['view_mode'],
+    );
+    drupal_add_js(array('mediaDataMap' => array($file->fid => $data)), 'setting');
+    $element['#attributes']['data-fid'] = $file->fid;
+    $element['#attributes']['data-media-element'] = '1';
+    $element['#attributes']['class'][] = 'media-element';
     $element['#attributes']['class'][] = 'align-center';
-    $settings['attributes']['class'][] = 'align-center';
+
     dpm('Settings after:');
     dpm($settings);
-
     dpm('Element');
     dpm($element);
   }  
