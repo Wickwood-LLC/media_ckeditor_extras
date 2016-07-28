@@ -18,7 +18,7 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
     // }
   }
 
-  dpm($wysiwyg);
+  dpm($settings);
   if ($wysiwyg) {
     $element['#attributes']['class'][] = 'align-center';
   }
