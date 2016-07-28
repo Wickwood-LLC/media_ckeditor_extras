@@ -13,7 +13,7 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
     dpm('Settings:');
     dpm($settings);
     $element['file'][$fid]['file']['#item']['class'][] = 'align-center';
-
+    $settings['attributes']['class'][] = 'align-center';
     dpm('Settings after:');
     dpm($settings);
 
