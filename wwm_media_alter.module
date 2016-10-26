@@ -1,62 +1,31 @@
 <?php
+
 /**
  * Implements hook_media_wysiwyg_token_to_markup_alter().
  */
 function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_info, $settings) {
-  
-  // $file = $tag_info['file'];
-  // $fid = $tag_info['fid'];
-
-  // if (!empty($settings['wysiwyg'])) {
-  //   dpm('Tag info:');
-  //   dpm($tag_info);
-  //   dpm('Settings:');
-  //   dpm($settings);
-  //   $element['#attributes']['class'][] = 'align-center';
-  //   $settings['attributes']['class'][] = 'align-center';
-  //   dpm('Settings after:');
-  //   dpm($settings);
-
-  //   dpm('Element');
-  //   dpm($element);
-  // }  
+  $file = $tag_info['file'];
 
   if (!empty($settings['wysiwyg']) || empty($file) || 'image' != $file->type) {
     return;
   }
+  // Add special alignment classes for image when entity is viewed.
   $wrapper = entity_metadata_wrapper('file', $file);
-
   $style = $wrapper->field_alignment->value();
-
-  if (!empty($style)) {
-    // foreach ($styles as $style) {
-      $element['content']['#attributes']['class'][] = $style;
-    // }
+  if (!empty($style) && $style != '_none') {
+    $element['content']['#attributes']['class'] = array_merge($element['content']['#attributes']['class'], $tag_info['attributes']['class']);
   }
-  
-  // $link = $wrapper->field_myimagelinkfield->value();
-  // if (!empty($link['url'])) {
-  //   $url = url($link['url']);
-  //   $element['content']['file']['#prefix'] = sprintf('<a href="%s">', $url);
-  //   $element['content']['file']['#suffix'] = '</a>';
-  // }
 }
 
-// function wwm_media_alter_media_token_to_markup_alter(&$element, $tag_info, $settings) {
-  // $element['#attributes']['class'][] = 'align-center';
-  // dpm($element);
-
-  // $file = $tag_info['file'];
-  // if (!empty($settings['wysiwyg']) || empty($file) || 'image' != $file->type) {
-  //   return;
-  // }
-  // $wrapper = entity_metadata_wrapper('file', $file);
-
-  // $style = $wrapper->field_alignment->value();
-
-  // if (!empty($style)) {
-  //   // foreach ($styles as $style) {
-  //     $element['#attributes']['class'][] = 'align-center';
-  //   // }
-  // }
-// }
+/**
+ * Implements hook_preprocess_HOOK()
+ */
+function wwm_media_alter_preprocess_file_entity(&$variables) {
+  if ($variables['type'] == 'image' && isset($variables['file']->override['wysiwyg']) && $variables['file']->override['wysiwyg']) {
+    $wrapper = entity_metadata_wrapper('file', $variables['file']);
+    $style = $wrapper->field_alignment->value();
+    if (!empty($style) && $style != '_none') {
+        $variables['classes_array'][] = $style;
+    }
+  }
+}
