@@ -6,14 +6,21 @@
 function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_info, $settings) {
   $file = $tag_info['file'];
 
-  if (!empty($settings['wysiwyg']) || empty($file) || 'image' != $file->type) {
+  if (empty($file) || 'image' != $file->type) {
     return;
   }
-  // Add special alignment classes for image when entity is viewed.
   $wrapper = entity_metadata_wrapper('file', $file);
-  $style = $wrapper->field_alignment->value();
-  if (!empty($style) && $style != '_none') {
-    $element['content']['#attributes']['class'] = array_merge($element['content']['#attributes']['class'], $tag_info['attributes']['class']);
+  if (!isset($wrapper->field_alignment)) {
+    return;
+  }
+
+  // Add special alignment classes for image when entity is viewed.
+  if (empty($settings['wysiwyg'])) {
+    $file->tested = true;
+    $style = $wrapper->field_alignment->value();
+    if (!empty($style) && $style != '_none') {
+      $element['content']['#attributes']['class'][] = $style;
+    }
   }
 }
 
@@ -25,7 +32,7 @@ function wwm_media_alter_preprocess_file_entity(&$variables) {
     $wrapper = entity_metadata_wrapper('file', $variables['file']);
     $style = $wrapper->field_alignment->value();
     if (!empty($style) && $style != '_none') {
-        $variables['classes_array'][] = $style;
+      $variables['classes_array'][] = $style;
     }
   }
 }
