@@ -1,6 +1,48 @@
 <?php
 
 /**
+ * Helper function to return all fields of one type on one bundle.
+ */
+function wwm_media_alter_fields_by_type_by_bundle($entity_type, $bundle, $type) {
+  $chosen_fields = array();
+  $fields = field_info_field_map();
+  foreach ($fields as $field => $info) {
+    if ($info['type'] == $type &&
+        in_array($entity_type, array_keys($info['bundles'])) &&
+        in_array($bundle, $info['bundles'][$entity_type]))
+    {
+      $chosen_fields[$field] = $field;
+    }
+  }
+  return $chosen_fields;
+}
+
+/**
+ * Helper function to return CSS classes and styles to be used for the entity.
+ */
+function wwm_media_alter_get_css_classes_and_styles($entity_type, $entity) {
+  $output = array('class' => array(), 'styles' => '');
+  list(, , $bundle) = entity_extract_ids($entity_type, $entity);
+  $wrapper = entity_metadata_wrapper($entity_type, $entity);
+  $css_fields = wwm_media_alter_fields_by_type_by_bundle($entity_type, $bundle, 'css_class');
+
+  foreach ($css_fields as $field_name) {
+    if (isset($wrapper->{$field_name})) {
+      $class = $wrapper->{$field_name}->value();
+      if (!empty($class) && $class != '_none') {
+        $output['class'][] = $class;
+        $field = field_info_field($field_name);
+        if (!empty($field['settings']['css_style_text'])) {
+          $output['styles'] .= "\n" . $field['settings']['css_style_text'];
+        }
+      }
+    }
+  }
+  return $output;
+}
+
+
+/**
  * Implements hook_media_wysiwyg_token_to_markup_alter().
  */
 function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_info, $settings) {
@@ -9,18 +51,12 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
   if (empty($file) || 'image' != $file->type) {
     return;
   }
-  $wrapper = entity_metadata_wrapper('file', $file);
-  if (!isset($wrapper->field_alignment)) {
-    return;
-  }
-
-  // Add special alignment classes for image when entity is viewed.
+  $entity_type = 'file';
+  // Add classes for image when entity is viewed.
   if (empty($settings['wysiwyg'])) {
-    $file->tested = true;
-    $style = $wrapper->field_alignment->value();
-    if (!empty($style) && $style != '_none') {
-      $element['content']['#attributes']['class'][] = $style;
-    }
+    $css_data = wwm_media_alter_get_css_classes_and_styles($entity_type, $file);
+    $element['content']['#attributes']['class'] = array_merge($element['content']['#attributes']['class'], $css_data['class']);
+    drupal_add_css($css_data['styles'], array('type' => 'inline'));
   }
 }
 
@@ -29,10 +65,104 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
  */
 function wwm_media_alter_preprocess_file_entity(&$variables) {
   if ($variables['type'] == 'image' && isset($variables['file']->override['wysiwyg']) && $variables['file']->override['wysiwyg']) {
-    $wrapper = entity_metadata_wrapper('file', $variables['file']);
-    $style = $wrapper->field_alignment->value();
-    if (!empty($style) && $style != '_none') {
-      $variables['classes_array'][] = $style;
-    }
+    $entity_type = 'file';
+    $css_data = wwm_media_alter_get_css_classes_and_styles($entity_type, $variables['file']);
+    $variables['classes_array'] = isset($variables['classes_array']) ? $variables['classes_array'] : array();
+    $variables['classes_array'] = array_merge($variables['classes_array'], $css_data['class']);
+    drupal_add_css($css_data['styles'], array('type' => 'inline'));
   }
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function wwm_media_alter_field_info() {
+  return array(
+    'css_class' => array(
+      'label' => t('CSS Class'),
+      'description' => t("This field stores text values from a list of allowed 'value => label' pairs, i.e. 'US States': IL => Illinois, IA => Iowa, IN => Indiana."),
+      'settings' => array('allowed_values' => array(), 'allowed_values_function' => '', 'css_style_text' => ''),
+      'default_widget' => 'options_select',
+      'default_formatter' => 'list_default',
+      'property_type' => 'text',
+      'property_callbacks' => array('wwm_media_alter_entity_metadata_field_property_callback'),
+    ),
+  );
+}
+
+/**
+ * Callback to add in property info defaults per field instance.
+ * @see entity_metadata_field_entity_property_info().
+ */
+function wwm_media_alter_entity_metadata_field_property_callback(&$info, $entity_type, $field, $instance, $field_type) {
+  $name = $field['field_name'];
+  $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$name];
+  entity_metadata_field_default_property_callback($info, $entity_type, $field, $instance, $field_type);
+  $property['options list'] = 'entity_metadata_field_options_list';
+}
+
+/**
+ * Implements hook_field_settings_form().
+ */
+function wwm_media_alter_field_settings_form($field, $instance, $has_data) {
+  $field_clone = $field;
+  // Set field type to list_text and get settings form.
+  // So, we can duplicating that much code here.
+  $field_clone['type'] = 'list_text';
+  $form = list_field_settings_form($field_clone, $instance, $has_data);
+
+  $settings = $field['settings'];
+  $form['css_style_text'] = array(
+    '#type' => 'textarea',
+    '#title' => t('CSS styles'),
+    '#description' => t('Provide CSS style text here. It will get includes as inline CSS as required.'),
+    '#default_value' => $settings['css_style_text'],
+    '#rows' => 10,
+    '#field_has_data' => $has_data,
+    '#field' => $field,
+    '#field_type' => $field['type'],
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_field_widget_info_alter().
+ *
+ * This module does not implement widgets of its own, but reuses the
+ * widgets defined in options.module.
+ *
+ * @see list_options_list()
+ */
+function wwm_media_alter_field_widget_info_alter(&$info) {
+  $widgets = array(
+    'options_select' => array('css_class'),
+    'options_buttons' => array('css_class'),
+  );
+
+  foreach ($widgets as $widget => $field_types) {
+    $info[$widget]['field types'] = array_merge($info[$widget]['field types'], $field_types);
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info_alter().
+ */
+function wwm_media_alter_field_formatter_info_alter(&$info) {
+  $info['list_default']['field types'][] = 'css_class';
+  $info['list_key']['field types'][] = 'css_class';
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function wwm_media_alter_field_is_empty($item, $field) {
+  return list_field_is_empty($item, $field);
+}
+
+/**
+ * Implements hook_options_list().
+ */
+function wwm_media_alter_options_list($field, $instance, $entity_type, $entity) {
+  return list_allowed_values($field, $instance, $entity_type, $entity);
 }

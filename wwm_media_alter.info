@@ -5,3 +5,5 @@ core = 7.x
 version = 7.x-1.0
 files[] = wwm_media_alter.module
 
+dependencies[] = list
+dependencies[] = entity
