@@ -22,3 +22,13 @@ function wwm_media_alter_field_schema($field) {
     ),
   );
 }
+
+/**
+ * Implements hook_uninstall().
+ */
+function wwm_media_alter_uninstall() {
+  $f = entity_get_info('file');
+  foreach(array_keys($f['bundles']) as $type) {
+    variable_del("wwm_media_alter_file_{$type}_link");
+  }
+}

@@ -91,6 +91,17 @@ function wwm_media_alter_preprocess_file_entity(&$variables) {
       'setting'
     );
   }
+  // Link media to the URL that given in selected link field.
+  $link_field_name = variable_get("wwm_media_alter_file_{$variables['type']}_link", '_none');
+  if (!empty($link_field_name) && $link_field_name != '_none') {
+    $file_wrapper = entity_metadata_wrapper('file', $variables['file']);
+    if (isset($file_wrapper->{$link_field_name})) {
+      $link = $file_wrapper->{$link_field_name}->value();
+      if (!empty($link['url'])) {
+        $variables['content']['file']['#path']['path'] = $link['url'];
+      }
+    }
+  }
 }
 
 /**
@@ -185,4 +196,37 @@ function wwm_media_alter_field_is_empty($item, $field) {
  */
 function wwm_media_alter_options_list($field, $instance, $entity_type, $entity) {
   return list_allowed_values($field, $instance, $entity_type, $entity);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function wwm_media_alter_form_file_entity_file_type_form_alter(&$form, $form_state) {
+  if ($form['#file_type']->type == 'image') {
+    $form['wwm_media_alter'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('WWM Media Alter'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    $options = array('_none' => t('None'));
+    $link_fields = wwm_media_alter_fields_by_type_by_bundle('file', $form['#file_type']->type, 'link_field');
+    foreach ($link_fields as $field_name) {
+      $options[$field_name] = $field_name;
+    }
+    $form['wwm_media_alter']['wwm_media_alter_link'] = array(
+      '#type' => 'select',
+      '#title' => t('Link'),
+      '#description' => t('Select the link field that will be used to link the image.'),
+      '#options' => $options,
+      '#default_value' => variable_get("wwm_media_alter_file_{$form['#file_type']->type}_link", '_none'),
+      '#required' => FALSE,
+    );
+
+    $form['#submit'][] = 'wwm_media_alter_file_entity_file_type_form_submit';
+  }
+}
+
+function wwm_media_alter_file_entity_file_type_form_submit($form, $form_state) {
+  variable_set("wwm_media_alter_file_{$form['#file_type']->type}_link", $form_state['values']['wwm_media_alter_link']);
 }
