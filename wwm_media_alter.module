@@ -56,6 +56,16 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
   if (empty($settings['wysiwyg'])) {
     $css_data = wwm_media_alter_get_css_classes_and_styles($entity_type, $file);
     $element['content']['#attributes']['class'] = array_merge($element['content']['#attributes']['class'], $css_data['class']);
+    drupal_add_js(
+      array(
+        'wwm_media_alter' => array(
+          'styles' => array(
+            "$entity_type.{$file->fid}" => $css_data['styles']
+          ),
+        )
+      ),
+      'setting'
+    );
     drupal_add_css($css_data['styles'], array('type' => 'inline'));
   }
 }
@@ -70,6 +80,16 @@ function wwm_media_alter_preprocess_file_entity(&$variables) {
     $variables['classes_array'] = isset($variables['classes_array']) ? $variables['classes_array'] : array();
     $variables['classes_array'] = array_merge($variables['classes_array'], $css_data['class']);
     drupal_add_css($css_data['styles'], array('type' => 'inline'));
+    drupal_add_js(
+      array(
+        'wwm_media_alter' => array(
+          'styles' => array(
+            "$entity_type.{$variables['file']->fid}" => $css_data['styles']
+          ),
+        )
+      ),
+      'setting'
+    );
   }
 }
 
