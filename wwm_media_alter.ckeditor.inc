@@ -8,7 +8,7 @@
 /**
  * Implements hook_ckeditor_plugin_alter().
  */
-function wwm_media_alter_ckeditor_plugin(&$plugins) {
+function wwm_media_alter_ckeditor_plugin() {
   // Override the default CKEditor Media plugin.
   return array(
     'wwm_media_alter' => array(
