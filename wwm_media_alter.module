@@ -56,16 +56,6 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
   if (empty($settings['wysiwyg'])) {
     $css_data = wwm_media_alter_get_css_classes_and_styles($entity_type, $file);
     $element['content']['#attributes']['class'] = array_merge($element['content']['#attributes']['class'], $css_data['class']);
-    drupal_add_js(
-      array(
-        'wwm_media_alter' => array(
-          'styles' => array(
-            "$entity_type.{$file->fid}" => $css_data['styles']
-          ),
-        )
-      ),
-      'setting'
-    );
     drupal_add_css($css_data['styles'], array('type' => 'inline'));
   }
 }
@@ -229,4 +219,28 @@ function wwm_media_alter_form_file_entity_file_type_form_alter(&$form, $form_sta
 
 function wwm_media_alter_file_entity_file_type_form_submit($form, $form_state) {
   variable_set("wwm_media_alter_file_{$form['#file_type']->type}_link", $form_state['values']['wwm_media_alter_link']);
+}
+
+/**
+ * Implements hook_ckeditor_settings_alter()
+ */
+function wwm_media_alter_ckeditor_settings_alter(&$settings, $conf) {
+  $css_fields = wwm_media_alter_fields_by_type_by_bundle('file', 'image', 'css_class');
+  $styles = '';
+  foreach ($css_fields as $field_name) {
+    $field = field_info_field($field_name);
+    if (!empty($field['settings']['css_style_text'])) {
+      $styles .= "\n" . $field['settings']['css_style_text'];
+    }
+  }
+  drupal_add_js(
+    array(
+      'wwm_media_alter' => array(
+        'styles' => array(
+          "file" => $styles,
+        ),
+      )
+    ),
+    'setting'
+  );
 }
