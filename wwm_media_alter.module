@@ -92,6 +92,9 @@ function wwm_media_alter_preprocess_file_entity(&$variables) {
         if (!empty($link['attributes']['target'])) {
           $variables['content']['file']['#path']['options']['attributes']['target'] = $link['attributes']['target'];
         }
+        if (!empty($link['attributes']['class'])) {
+          $variables['content']['file']['#path']['options']['attributes']['class'][] = $link['attributes']['class'];
+        }
       }
     }
   }
