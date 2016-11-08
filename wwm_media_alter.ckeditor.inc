@@ -8,13 +8,13 @@
 /**
  * Implements hook_ckeditor_plugin_alter().
  */
-function wwm_media_alter_ckeditor_plugin() {
+function media_ckeditor_extras_ckeditor_plugin() {
   // Override the default CKEditor Media plugin.
   return array(
-    'wwm_media_alter' => array(
-      'name' => 'wwm_media_alter',
+    'media_ckeditor_extras' => array(
+      'name' => 'media_ckeditor_extras',
       'desc' => t('WWM Media Alter'),
-      'path' => '%base_path%' . drupal_get_path('module', 'wwm_media_alter') . '/editor_plugin/',
+      'path' => '%base_path%' . drupal_get_path('module', 'media_ckeditor_extras') . '/editor_plugin/',
       'default' => 'f',
     )
   );

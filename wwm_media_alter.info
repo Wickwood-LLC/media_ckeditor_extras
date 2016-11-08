@@ -3,7 +3,7 @@ description = Custom module that modifies the media markup in WYSIWYG to allow f
 package = WWM
 core = 7.x
 version = 7.x-1.0
-files[] = wwm_media_alter.module
+files[] = media_ckeditor_extras.module
 
 dependencies[] = list
 dependencies[] = entity

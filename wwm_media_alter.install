@@ -3,7 +3,7 @@
 /**
  * Implements hook_field_schema().
  */
-function wwm_media_alter_field_schema($field) {
+function media_ckeditor_extras_field_schema($field) {
   switch ($field['type']) {
     case 'css_class':
       $columns = array(
@@ -26,9 +26,9 @@ function wwm_media_alter_field_schema($field) {
 /**
  * Implements hook_uninstall().
  */
-function wwm_media_alter_uninstall() {
+function media_ckeditor_extras_uninstall() {
   $f = entity_get_info('file');
   foreach(array_keys($f['bundles']) as $type) {
-    variable_del("wwm_media_alter_file_{$type}_link");
+    variable_del("media_ckeditor_extras_file_{$type}_link");
   }
 }

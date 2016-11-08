@@ -3,7 +3,7 @@
 /**
  * Helper function to return all fields of one type on one bundle.
  */
-function wwm_media_alter_fields_by_type_by_bundle($entity_type, $bundle, $type) {
+function media_ckeditor_extras_fields_by_type_by_bundle($entity_type, $bundle, $type) {
   $chosen_fields = array();
   $fields = field_info_field_map();
   foreach ($fields as $field => $info) {
@@ -20,11 +20,11 @@ function wwm_media_alter_fields_by_type_by_bundle($entity_type, $bundle, $type) 
 /**
  * Helper function to return CSS classes and styles to be used for the entity.
  */
-function wwm_media_alter_get_css_classes_and_styles($entity_type, $entity) {
+function media_ckeditor_extras_get_css_classes_and_styles($entity_type, $entity) {
   $output = array('class' => array(), 'styles' => '');
   list(, , $bundle) = entity_extract_ids($entity_type, $entity);
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
-  $css_fields = wwm_media_alter_fields_by_type_by_bundle($entity_type, $bundle, 'css_class');
+  $css_fields = media_ckeditor_extras_fields_by_type_by_bundle($entity_type, $bundle, 'css_class');
 
   foreach ($css_fields as $field_name) {
     if (isset($wrapper->{$field_name})) {
@@ -45,7 +45,7 @@ function wwm_media_alter_get_css_classes_and_styles($entity_type, $entity) {
 /**
  * Implements hook_media_wysiwyg_token_to_markup_alter().
  */
-function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_info, $settings) {
+function media_ckeditor_extras_media_wysiwyg_token_to_markup_alter(&$element, $tag_info, $settings) {
   $file = $tag_info['file'];
 
   if (empty($file) || 'image' != $file->type) {
@@ -54,7 +54,7 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
   $entity_type = 'file';
   // Add classes for image when entity is viewed.
   if (empty($settings['wysiwyg'])) {
-    $css_data = wwm_media_alter_get_css_classes_and_styles($entity_type, $file);
+    $css_data = media_ckeditor_extras_get_css_classes_and_styles($entity_type, $file);
     $element['content']['#attributes']['class'] = array_merge($element['content']['#attributes']['class'], $css_data['class']);
     drupal_add_css($css_data['styles'], array('type' => 'inline'));
   }
@@ -63,16 +63,16 @@ function wwm_media_alter_media_wysiwyg_token_to_markup_alter(&$element, $tag_inf
 /**
  * Implements hook_preprocess_HOOK()
  */
-function wwm_media_alter_preprocess_file_entity(&$variables) {
+function media_ckeditor_extras_preprocess_file_entity(&$variables) {
   if ($variables['type'] == 'image' && isset($variables['file']->override['wysiwyg']) && $variables['file']->override['wysiwyg']) {
     $entity_type = 'file';
-    $css_data = wwm_media_alter_get_css_classes_and_styles($entity_type, $variables['file']);
+    $css_data = media_ckeditor_extras_get_css_classes_and_styles($entity_type, $variables['file']);
     $variables['classes_array'] = isset($variables['classes_array']) ? $variables['classes_array'] : array();
     $variables['classes_array'] = array_merge($variables['classes_array'], $css_data['class']);
     drupal_add_css($css_data['styles'], array('type' => 'inline'));
     drupal_add_js(
       array(
-        'wwm_media_alter' => array(
+        'media_ckeditor_extras' => array(
           'styles' => array(
             "$entity_type.{$variables['file']->fid}" => $css_data['styles']
           ),
@@ -82,7 +82,7 @@ function wwm_media_alter_preprocess_file_entity(&$variables) {
     );
   }
   // Link media to the URL that given in selected link field.
-  $link_field_name = variable_get("wwm_media_alter_file_{$variables['type']}_link", '_none');
+  $link_field_name = variable_get("media_ckeditor_extras_file_{$variables['type']}_link", '_none');
   if (!empty($link_field_name) && $link_field_name != '_none') {
     $file_wrapper = entity_metadata_wrapper('file', $variables['file']);
     if (isset($file_wrapper->{$link_field_name})) {
@@ -103,7 +103,7 @@ function wwm_media_alter_preprocess_file_entity(&$variables) {
 /**
  * Implements hook_field_info().
  */
-function wwm_media_alter_field_info() {
+function media_ckeditor_extras_field_info() {
   return array(
     'css_class' => array(
       'label' => t('CSS Class'),
@@ -112,7 +112,7 @@ function wwm_media_alter_field_info() {
       'default_widget' => 'options_select',
       'default_formatter' => 'list_default',
       'property_type' => 'text',
-      'property_callbacks' => array('wwm_media_alter_entity_metadata_field_property_callback'),
+      'property_callbacks' => array('media_ckeditor_extras_entity_metadata_field_property_callback'),
     ),
   );
 }
@@ -121,7 +121,7 @@ function wwm_media_alter_field_info() {
  * Callback to add in property info defaults per field instance.
  * @see entity_metadata_field_entity_property_info().
  */
-function wwm_media_alter_entity_metadata_field_property_callback(&$info, $entity_type, $field, $instance, $field_type) {
+function media_ckeditor_extras_entity_metadata_field_property_callback(&$info, $entity_type, $field, $instance, $field_type) {
   $name = $field['field_name'];
   $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$name];
   entity_metadata_field_default_property_callback($info, $entity_type, $field, $instance, $field_type);
@@ -131,7 +131,7 @@ function wwm_media_alter_entity_metadata_field_property_callback(&$info, $entity
 /**
  * Implements hook_field_settings_form().
  */
-function wwm_media_alter_field_settings_form($field, $instance, $has_data) {
+function media_ckeditor_extras_field_settings_form($field, $instance, $has_data) {
   $field_clone = $field;
   // Set field type to list_text and get settings form.
   // So, we can duplicating that much code here.
@@ -161,7 +161,7 @@ function wwm_media_alter_field_settings_form($field, $instance, $has_data) {
  *
  * @see list_options_list()
  */
-function wwm_media_alter_field_widget_info_alter(&$info) {
+function media_ckeditor_extras_field_widget_info_alter(&$info) {
   $widgets = array(
     'options_select' => array('css_class'),
     'options_buttons' => array('css_class'),
@@ -175,7 +175,7 @@ function wwm_media_alter_field_widget_info_alter(&$info) {
 /**
  * Implements hook_field_formatter_info_alter().
  */
-function wwm_media_alter_field_formatter_info_alter(&$info) {
+function media_ckeditor_extras_field_formatter_info_alter(&$info) {
   $info['list_default']['field types'][] = 'css_class';
   $info['list_key']['field types'][] = 'css_class';
 }
@@ -183,53 +183,53 @@ function wwm_media_alter_field_formatter_info_alter(&$info) {
 /**
  * Implements hook_field_is_empty().
  */
-function wwm_media_alter_field_is_empty($item, $field) {
+function media_ckeditor_extras_field_is_empty($item, $field) {
   return list_field_is_empty($item, $field);
 }
 
 /**
  * Implements hook_options_list().
  */
-function wwm_media_alter_options_list($field, $instance, $entity_type, $entity) {
+function media_ckeditor_extras_options_list($field, $instance, $entity_type, $entity) {
   return list_allowed_values($field, $instance, $entity_type, $entity);
 }
 
 /**
  * Implements hook_form_FORM_ID_alter()
  */
-function wwm_media_alter_form_file_entity_file_type_form_alter(&$form, $form_state) {
-  $form['wwm_media_alter'] = array(
+function media_ckeditor_extras_form_file_entity_file_type_form_alter(&$form, $form_state) {
+  $form['media_ckeditor_extras'] = array(
     '#type' => 'fieldset',
     '#title' => t('WWM Media Alter'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
   $options = array('_none' => t('None'));
-  $link_fields = wwm_media_alter_fields_by_type_by_bundle('file', $form['#file_type']->type, 'link_field');
+  $link_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', $form['#file_type']->type, 'link_field');
   foreach ($link_fields as $field_name) {
     $options[$field_name] = $field_name;
   }
-  $form['wwm_media_alter']['wwm_media_alter_link'] = array(
+  $form['media_ckeditor_extras']['media_ckeditor_extras_link'] = array(
     '#type' => 'select',
     '#title' => t('Link'),
     '#description' => t('Select the link field that will be used to link the image.'),
     '#options' => $options,
-    '#default_value' => variable_get("wwm_media_alter_file_{$form['#file_type']->type}_link", '_none'),
+    '#default_value' => variable_get("media_ckeditor_extras_file_{$form['#file_type']->type}_link", '_none'),
     '#required' => FALSE,
   );
 
-  $form['#submit'][] = 'wwm_media_alter_file_entity_file_type_form_submit';
+  $form['#submit'][] = 'media_ckeditor_extras_file_entity_file_type_form_submit';
 }
 
-function wwm_media_alter_file_entity_file_type_form_submit($form, $form_state) {
-  variable_set("wwm_media_alter_file_{$form['#file_type']->type}_link", $form_state['values']['wwm_media_alter_link']);
+function media_ckeditor_extras_file_entity_file_type_form_submit($form, $form_state) {
+  variable_set("media_ckeditor_extras_file_{$form['#file_type']->type}_link", $form_state['values']['media_ckeditor_extras_link']);
 }
 
 /**
  * Implements hook_ckeditor_settings_alter()
  */
-function wwm_media_alter_ckeditor_settings_alter(&$settings, $conf) {
-  $css_fields = wwm_media_alter_fields_by_type_by_bundle('file', 'image', 'css_class');
+function media_ckeditor_extras_ckeditor_settings_alter(&$settings, $conf) {
+  $css_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', 'image', 'css_class');
   $styles = '';
   foreach ($css_fields as $field_name) {
     $field = field_info_field($field_name);
@@ -239,7 +239,7 @@ function wwm_media_alter_ckeditor_settings_alter(&$settings, $conf) {
   }
   drupal_add_js(
     array(
-      'wwm_media_alter' => array(
+      'media_ckeditor_extras' => array(
         'styles' => array(
           "file" => $styles,
         ),
@@ -252,7 +252,7 @@ function wwm_media_alter_ckeditor_settings_alter(&$settings, $conf) {
 /**
  * Implements hook_entity_view().
  */
-function wwm_media_alter_entity_view($entity, $type, $view_mode, $langcode) {
+function media_ckeditor_extras_entity_view($entity, $type, $view_mode, $langcode) {
   // We can think about improving this part. Instead of loading 'CSS Class' field
   // styles always. But we need to keep a map of pairs 'entity_type:entity_id' => field
   // So, we can load these styles as required.
@@ -261,7 +261,7 @@ function wwm_media_alter_entity_view($entity, $type, $view_mode, $langcode) {
   // 'CSS Class' fields in output
   if ($type == 'node') {
     $styles = '';
-    $css_class_fields = wwm_media_alter_fields_by_type_by_bundle('file', 'image', 'css_class');
+    $css_class_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', 'image', 'css_class');
     foreach ($css_class_fields as $field_name) {
       $field = field_info_field($field_name);
       if (!empty($field['settings']['css_style_text'])) {
