@@ -200,7 +200,7 @@ function media_ckeditor_extras_options_list($field, $instance, $entity_type, $en
 function media_ckeditor_extras_form_file_entity_file_type_form_alter(&$form, $form_state) {
   $form['media_ckeditor_extras'] = array(
     '#type' => 'fieldset',
-    '#title' => t('WWM Media Alter'),
+    '#title' => t('Media CKEditor Extras'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
