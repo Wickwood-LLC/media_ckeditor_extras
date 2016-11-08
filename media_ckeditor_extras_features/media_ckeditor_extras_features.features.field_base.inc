@@ -78,10 +78,6 @@ div.media-element.mce-align-right {
   margin-left: 5px;
   margin-bottom: 5px;
 }
-div.media-element-container.mce-align-right + *,
-div.media-element.mce-align-right + *{
-  clear: right;
-}
 
 div.media-element-container.mce-align-left,
 div.media-element.mce-align-left {
@@ -90,10 +86,7 @@ div.media-element.mce-align-left {
   margin-right: 5px;
   margin-bottom: 5px;
 }
-div.media-element-container.mce-align-left + *,
-div.media-element.mce-align-left + *{
-  clear: left;
-}',
+',
     ),
     'translatable' => 0,
     'type' => 'css_class',
