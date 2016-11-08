@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Media CKEditor Extras Features feature.
+ */
+
+include_once 'media_ckeditor_extras_features.features.inc';
