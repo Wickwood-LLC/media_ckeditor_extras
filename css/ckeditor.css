@@ -1,0 +1,6 @@
+.media-element-container .content,
+.media-element .content{
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid black;
+}

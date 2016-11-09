@@ -247,6 +247,8 @@ function media_ckeditor_extras_ckeditor_settings_alter(&$settings, $conf) {
     ),
     'setting'
   );
+  global $base_path;
+  $settings['contentsCss'][] = $base_path . '/' . drupal_get_path('module', 'media_ckeditor_extras') . '/css/ckeditor.css';
 }
 
 /**
@@ -269,5 +271,6 @@ function media_ckeditor_extras_entity_view($entity, $type, $view_mode, $langcode
       }
     }
     drupal_add_css($styles, array('type' => 'inline'));
+    drupal_add_css(drupal_get_path('module', 'media_ckeditor_extras') . '/css/ckeditor.css');
   }
 }
