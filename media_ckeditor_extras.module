@@ -248,7 +248,7 @@ function media_ckeditor_extras_ckeditor_settings_alter(&$settings, $conf) {
     'setting'
   );
   global $base_path;
-  $settings['contentsCss'][] = $base_path . '/' . drupal_get_path('module', 'media_ckeditor_extras') . '/css/ckeditor.css';
+  $settings['contentsCss'][] = $base_path . drupal_get_path('module', 'media_ckeditor_extras') . '/css/ckeditor.css';
 }
 
 /**
