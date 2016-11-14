@@ -87,7 +87,8 @@ function media_ckeditor_extras_preprocess_file_entity(&$variables) {
     $file_wrapper = entity_metadata_wrapper('file', $variables['file']);
     if (isset($file_wrapper->{$link_field_name})) {
       $link = $file_wrapper->{$link_field_name}->value();
-      if (!empty($link['url'])) {
+      // Ensure we are altering data for 'image_formatter' theme to avoid surprices.
+      if (!empty($link['url']) && $variables['content']['file']['#theme'] == 'image_formatter') {
         $variables['content']['file']['#path']['path'] = $link['url'];
         if (!empty($link['attributes']['target'])) {
           $variables['content']['file']['#path']['options']['attributes']['target'] = $link['attributes']['target'];
