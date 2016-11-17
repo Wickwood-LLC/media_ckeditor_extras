@@ -1,8 +1,10 @@
 <h3>About</h3>
-<p>The <em>Media CKEditor Extras</em> module provides some enhancements and features on top of Media-CKEditor stack. Features implemented by this module includes:</p>
+<p>The 'Media CKEditor Extras' module provides some enhancements and features on top of Media-CKEditor stack. Features implemented by this module includes:</p>
 <dl>
   <dt>CSS Class field type</dt>
-  <dd>This field type is almost same like 'List text'. The key values in fields of this type are supposed as CSS classes. On rendering, those CSS classes will be added to wrapper element of the rendered entity output. Currently only Image type of Media entity type is supported.</dd>
+  <dd>This field type is almost same like 'List text'. The key values in fields of this type are supposed as CSS classes. Also, there will be extra configuration field called 'CSS styles' in field settings page. Which can be used to add CSS styles. On rendering, those CSS classes will be added to wrapper element of the rendered entity output. CSS styles also will be added to page output. Currently only Image type of Media entity type is supported.</dd>
+  <dt>Image Alignment</dt>
+  <dd>Submodule 'Media CKEditor Extras Features' brings a field called 'Image placement' which is of 'CSS Class' type mentioned above. Which alredy have some preconfiguraed CSS styles. So, you can use this field to align image on right, left or center on output.</dd>
   <dt>Caption</dt>
   <dd>Submodule 'Media CKEditor Extras Features' brings a field 'Caption' which can be used as caption for the images while adding to WYSIWYG editor using Media browser dialog.</dd>
   <dt>Link field</dt>
