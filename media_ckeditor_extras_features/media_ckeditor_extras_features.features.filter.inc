@@ -41,6 +41,7 @@ function media_ckeditor_extras_features_filter_default_formats() {
         'weight' => 50,
         'status' => 1,
         'settings' => array(
+          'settings_source' => 'global',
           'local_paths' => '',
           'protocol_style' => 'full',
         ),

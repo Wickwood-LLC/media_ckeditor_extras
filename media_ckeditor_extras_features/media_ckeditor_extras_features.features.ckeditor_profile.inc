@@ -78,20 +78,6 @@ function media_ckeditor_extras_features_ckeditor_profile_defaults() {
               ),
             ),
           ),
-          'picture_ckeditor' => array(
-            'name' => 'picture_ckeditor',
-            'desc' => 'Support responsive images with the Picture module.',
-            'buttons' => FALSE,
-            'path' => '%base_path%sites/all/modules/picture/ckeditor/plugins/',
-            'default' => 't',
-          ),
-          'sourcedialog' => array(
-            'name' => 'sourcedialog',
-            'desc' => 'Plugin file: sourcedialog',
-            'path' => '%plugin_dir_extra%sourcedialog/',
-            'buttons' => FALSE,
-            'default' => 'f',
-          ),
         ),
       ),
       'input_formats' => array(
