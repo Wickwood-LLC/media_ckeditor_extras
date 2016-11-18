@@ -40,4 +40,5 @@
     </ul>
   </li>
   <li>Make sure 'Image' button to be removed from toolbar of CKEditor profles that requires enhancements.</li>
+  <li>Grant permission "Use the Caption HTML text format" to following roles: Contributor, Editor, Administrator and Webmaster.</li>
 </ul>
