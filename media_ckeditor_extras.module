@@ -292,3 +292,11 @@ function media_ckeditor_extras_entity_view($entity, $type, $view_mode, $langcode
     drupal_add_css(drupal_get_path('module', 'media_ckeditor_extras') . '/css/ckeditor.css');
   }
 }
+
+/**
+ * Implements hook_advanced_help_topic_info_alter().
+ */
+function media_ckeditor_extras_advanced_help_topic_info_alter(&$ini) {
+  // Disabled advance help for this module. We do not support advanced help.
+  unset($ini['topics']['media_ckeditor_extras']);
+}
