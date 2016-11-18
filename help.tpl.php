@@ -30,7 +30,7 @@
 <ul>
   <li>Go to <?php print l('Media browser settngs', 'admin/config/media/browser'); ?> page. Enable "Display fully rendered files in WYSIWYG" checkbox under "CKEditor WYSIWYG Configuration" section.</li>
   <li>Go to Permissions page and grant permission 'View overridden file entities in wysiwyg' to roles as required. Probably to 'Authenticated User' role.</li>
-  <li>Go to <?php print l('CKEditor Global profile'); ?> page. Ensure plugin path on field "Path to the CKEditor plugins directory" is correctly configured. You can specify <strong>'%l/ckeditor/plugins'</strong> if CKEditor is put in libraries directory.</li>
+  <li>Go to <?php print l('CKEditor Global profile', 'admin/config/content/ckeditor/editg'); ?> page. Ensure plugin path on field "Path to the CKEditor plugins directory" is correctly configured. You can specify <strong>'%l/ckeditor/plugins'</strong> if CKEditor is put in libraries directory.</li>
   <li>Make sure following plugins are enabled on CKEditor profiles that requires enhancements:
     <ul>
       <li>Support for Linkit module</li>
