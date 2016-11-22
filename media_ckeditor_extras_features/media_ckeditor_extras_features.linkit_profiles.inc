@@ -174,7 +174,7 @@ function media_ckeditor_extras_features_default_linkit_profiles() {
         'weight' => '-10',
       ),
       'entity:user' => array(
-        'enabled' => 1,
+        'enabled' => 0,
         'weight' => '-10',
       ),
       'entity:node' => array(
@@ -265,7 +265,7 @@ function media_ckeditor_extras_features_default_linkit_profiles() {
       'group_by_bundle' => 0,
     ),
     'insert_plugin' => array(
-      'url_method' => '2',
+      'url_method' => '3',
     ),
     'attribute_plugins' => array(
       'accesskey' => array(
@@ -273,7 +273,7 @@ function media_ckeditor_extras_features_default_linkit_profiles() {
         'weight' => '-10',
       ),
       'target' => array(
-        'enabled' => 0,
+        'enabled' => 1,
         'weight' => '-10',
       ),
       'id' => array(
@@ -285,11 +285,11 @@ function media_ckeditor_extras_features_default_linkit_profiles() {
         'weight' => '-10',
       ),
       'class' => array(
-        'enabled' => 0,
+        'enabled' => 1,
         'weight' => '-10',
       ),
       'title' => array(
-        'enabled' => 0,
+        'enabled' => 1,
         'weight' => '-10',
       ),
     ),
