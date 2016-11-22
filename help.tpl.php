@@ -29,7 +29,7 @@
 <h3>Configurations Required for Complete Media-CKEditor Stack to Work</h3>
 <ul>
   <li>Go to <?php print l('Media browser settngs', 'admin/config/media/browser'); ?> page. Enable "Display fully rendered files in WYSIWYG" checkbox under "CKEditor WYSIWYG Configuration" section.</li>
-  <li>Go to <?php print l('Permissions', 'admin/people/permissions'); ?> page and grant permission 'View overridden file entities in wysiwyg' to roles as required. Probably to 'Authenticated User' role.</li>
+  <li>Go to <?php print l('Permissions', 'admin/people/permissions'); ?> page and grant permissions 'Use the Caption HTML text format' and 'View overridden file entities in wysiwyg' to roles as required. The 'Use the Caption HTML text format' permission should typically be granted to roles like: Contributor, Editor, Administrator and Webmaster. The 'View overridden file entities in wysiwyg'  permission can probably be granted to 'Authenticated User' role.</li>
   <li>Go to <?php print l('CKEditor Global profile', 'admin/config/content/ckeditor/editg'); ?> page. Ensure plugin path on field "Path to the CKEditor plugins directory" is correctly configured. You can specify <strong>'%l/ckeditor/plugins'</strong> if CKEditor is put in libraries directory.</li>
   <li>Make sure following plugins are enabled on CKEditor profiles that require Media Extras:
     <ul>
@@ -40,5 +40,4 @@
     </ul>
   </li>
   <li>Make sure to remove the default CKEditor 'Image' and 'Link' buttons and add the 'Media' and 'Linkit' buttons to toolbar of CKEditor profles that require Media Extras.</li>
-  <li>Grant permission "Use the Caption HTML text format" to following roles: Contributor, Editor, Administrator and Webmaster.</li>
 </ul>
