@@ -28,7 +28,12 @@
 
 <h3>Configurations Required for Complete Media-CKEditor Stack to Work</h3>
 <ul>
-  <li>Go to <?php print l('Media browser settngs', 'admin/config/media/browser'); ?> page. Enable "Display fully rendered files in WYSIWYG" checkbox under "CKEditor WYSIWYG Configuration" section.</li>
+  <li>Go to <?php print l('Media browser settngs', 'admin/config/media/browser'); ?> page and apply following configurations.
+    <ul>
+      <li>Select "Full file entity rendering" option for "How should file entities be rendered within a text field?" under "WYSIWYG Configuration" section.</li>
+      <li>Enable "Display fully rendered files in WYSIWYG" checkbox under "CKEditor WYSIWYG Configuration" section.</li>
+    </ul>
+  </li>
   <li>Go to <?php print l('Permissions', 'admin/people/permissions'); ?> page and grant permissions 'Use the Caption HTML text format' and 'View overridden file entities in wysiwyg' to roles as required. The 'Use the Caption HTML text format' permission should typically be granted to roles like: Contributor, Editor, Administrator and Webmaster. The 'View overridden file entities in wysiwyg'  permission can probably be granted to 'Authenticated User' role.</li>
   <li>Go to <?php print l('CKEditor Global profile', 'admin/config/content/ckeditor/editg'); ?> page. Ensure plugin path on field "Path to the CKEditor plugins directory" is correctly configured. You can specify <strong>'%l/ckeditor/plugins'</strong> if CKEditor is put in libraries directory.</li>
   <li>Make sure following plugins are enabled on CKEditor profiles that require Media Extras:
@@ -40,4 +45,5 @@
     </ul>
   </li>
   <li>Make sure to remove the default CKEditor 'Image' and 'Link' buttons and add the 'Media' and 'Linkit' buttons to toolbar of CKEditor profles that require Media Extras.</li>
+  <li>For all input formats, ensure "Convert Media tags to markup" filter comes before "Convert URLs into links" filter at "Filter processing order" as applicable. You can see all input formats in the system at "<?php print l('Text formats', 'admin/config/content/formats'); ?>" page.</li>
 </ul>
