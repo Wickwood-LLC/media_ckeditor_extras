@@ -46,4 +46,5 @@
   </li>
   <li>Make sure to remove the default CKEditor 'Image' and 'Link' buttons and add the 'Media' and 'Linkit' buttons to toolbar of CKEditor profles that require Media Extras.</li>
   <li>For all input formats, ensure "Convert Media tags to markup" filter comes before "Convert URLs into links" filter at "Filter processing order" as applicable. You can see all input formats in the system at "<?php print l('Text formats', 'admin/config/content/formats'); ?>" page.</li>
+  <li>You have to enable "Image" file display for each of view modes at "<?php print l('Manage File Display', 'admin/structure/file-types/manage/image/file-display'); ?>" that need image linking to work.</li>
 </ul>
