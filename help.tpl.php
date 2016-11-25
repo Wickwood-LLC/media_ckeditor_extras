@@ -47,4 +47,18 @@
   <li>Make sure to remove the default CKEditor 'Image' and 'Link' buttons and add the 'Media' and 'Linkit' buttons to toolbar of CKEditor profles that require Media Extras.</li>
   <li>For all input formats, ensure "Convert Media tags to markup" filter comes before "Convert URLs into links" filter at "Filter processing order" as applicable. You can see all input formats in the system at "<?php print l('Text formats', 'admin/config/content/formats'); ?>" page.</li>
   <li>You have to enable "Image" file display for each of view modes at "<?php print l('Manage File Display', 'admin/structure/file-types/manage/image/file-display'); ?>" that need image linking to work.</li>
+  <li>To create a view mode to display image with caption:
+    <ul>
+      <li>Create or choose a view mode</li>
+      <li>Open sub-tab for that view mode in <?php print l('Manage Display', 'admin/structure/file-types/manage/image/display'); ?> page.</li>
+      <li>Arrage fields, so that "File" comes first then "Caption" field with label set to "&lt;Hidden&gt;". Make all other fields hidden from displaying.</li>
+    </ul>
+  </li>
+  <li>To restrict available view modes in Media Browser popup:
+    <ul>
+      <li>Open <?php print l('Image type edit', 'admin/structure/file-types/manage/image'); ?> page.</li>
+      <li>Expand "Media WYSIWYG View Modes" field set</li>
+      <li>Enable "Restrict allowed view modes when embedding with the WYSIWYG". Then enable checkboxes for each of view modes that should be hidden on Media Browser popup.</li>
+    </ul>
+  </li>
 </ul>
