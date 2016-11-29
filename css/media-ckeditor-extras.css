@@ -2,7 +2,6 @@
 .media-element-container .content,
 .media-element .content{
   display: inline-block;
-  border: 1px solid black;
 }
 
 /* Clear the white space after image element as by default images are rendered like letter.*/
@@ -11,8 +10,9 @@
   vertical-align: middle;
 }
 
-/* For images added with style having "caption" in their name, add gray background. */
+/* For images added with style having "caption" in their name, add gray background and border. */
 *[class*="caption"].media-element-container .content,
 *[class*="caption"].media-element .content{
   background: rgba(0, 0, 0, 0.05);
+  border: 1px solid black;
 }
