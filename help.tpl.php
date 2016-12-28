@@ -53,4 +53,5 @@
       <li>Enable "Restrict allowed view modes when embedding with the WYSIWYG". Then enable checkboxes for each of view modes that should be hidden on Media Browser popup.</li>
     </ul>
   </li>
+  <li>Enable ckeditor_widgets module and enable "Plugin to add common widgets" checkbox in each CKEditor profile as required. It is required to open Media Browser when double clicked on added media items.</li>
 </ul>
