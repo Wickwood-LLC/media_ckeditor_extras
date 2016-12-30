@@ -20,14 +20,14 @@ function media_ckeditor_extras_help($path, $arg) {
 /**
  * Helper function to return all fields of one type on one bundle.
  */
-function media_ckeditor_extras_fields_by_type_by_bundle($entity_type, $bundle, $type) {
+function media_ckeditor_extras_fields_by_type_by_bundle($entity_type, $bundle = NULL, $type = NULL) {
   $chosen_fields = array();
   $fields = field_info_field_map();
   foreach ($fields as $field => $info) {
     if ($info['type'] == $type &&
         in_array($entity_type, array_keys($info['bundles'])) &&
-        in_array($bundle, $info['bundles'][$entity_type]))
-    {
+        (empty($bundle) || in_array($bundle, $info['bundles'][$entity_type]))
+    ){
       $chosen_fields[$field] = $field;
     }
   }
@@ -65,7 +65,7 @@ function media_ckeditor_extras_get_css_classes_and_styles($entity_type, $entity)
 function media_ckeditor_extras_media_wysiwyg_token_to_markup_alter(&$element, $tag_info, $settings) {
   $file = $tag_info['file'];
 
-  if (empty($file) || 'image' != $file->type) {
+  if (empty($file)) {
     return;
   }
   $entity_type = 'file';
@@ -81,7 +81,7 @@ function media_ckeditor_extras_media_wysiwyg_token_to_markup_alter(&$element, $t
  * Implements hook_preprocess_HOOK()
  */
 function media_ckeditor_extras_preprocess_file_entity(&$variables) {
-  if ($variables['type'] == 'image' && isset($variables['file']->override['wysiwyg']) && $variables['file']->override['wysiwyg']) {
+  if (isset($variables['file']->override['wysiwyg']) && $variables['file']->override['wysiwyg']) {
     $entity_type = 'file';
     $css_data = media_ckeditor_extras_get_css_classes_and_styles($entity_type, $variables['file']);
     $variables['classes_array'] = isset($variables['classes_array']) ? $variables['classes_array'] : array();
@@ -247,7 +247,7 @@ function media_ckeditor_extras_file_entity_file_type_form_submit($form, $form_st
  * Implements hook_ckeditor_settings_alter()
  */
 function media_ckeditor_extras_ckeditor_settings_alter(&$settings, $conf) {
-  $css_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', 'image', 'css_class');
+  $css_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', NULL, 'css_class');
   $styles = '';
   foreach ($css_fields as $field_name) {
     $field = field_info_field($field_name);
@@ -281,7 +281,7 @@ function media_ckeditor_extras_entity_view($entity, $type, $view_mode, $langcode
   // 'CSS Class' fields in output
   if ($type == 'node') {
     $styles = '';
-    $css_class_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', 'image', 'css_class');
+    $css_class_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', NULL, 'css_class');
     foreach ($css_class_fields as $field_name) {
       $field = field_info_field($field_name);
       if (!empty($field['settings']['css_style_text'])) {
