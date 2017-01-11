@@ -42,56 +42,6 @@ function media_ckeditor_extras_features_field_default_field_bases() {
     'type' => 'link_field',
   );
 
-  // Exported field_base: 'field_image_placement'.
-  $field_bases['field_image_placement'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_image_placement',
-    'field_permissions' => array(
-      'type' => 0,
-    ),
-    'indexes' => array(
-      'value' => array(
-        0 => 'value',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'media_ckeditor_extras',
-    'settings' => array(
-      'allowed_values' => array(
-        'mce-align-center' => 'Center',
-        'mce-align-right' => 'Right',
-        'mce-align-left' => 'Left',
-      ),
-      'allowed_values_function' => '',
-      'css_style_text' => 'div.media-element-container.mce-align-center,
-div.media-element.mce-align-center {
-  display: table;
-  margin: 0 auto;
-}
-div.media-element-container.mce-align-right,
-div.media-element.mce-align-right {
-  float: right;
-  margin-top: 5px;
-  margin-left: 5px;
-  margin-bottom: 5px;
-}
-
-div.media-element-container.mce-align-left,
-div.media-element.mce-align-left {
-  float: left;
-  margin-top: 5px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-}
-',
-    ),
-    'translatable' => 0,
-    'type' => 'css_class',
-  );
-
   // Exported field_base: 'field_long_caption'.
   $field_bases['field_long_caption'] = array(
     'active' => 1,
