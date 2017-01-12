@@ -5,11 +5,12 @@
  */
 function media_ckeditor_extras_help($path, $arg) {
   global $basePath;
+  $output = '';
   switch ($path) {
     case 'admin/help#media_ckeditor_extras':
       // We keep help text in separate file instead writing that long text here.
       // Otherwise the long help text would be read by PHP engine and kept in memory, which bad to have.
-      return theme_render_template(
+      $output = theme_render_template(
         drupal_get_path('module', 'media_ckeditor_extras') . '/help.tpl.php',
         array('basePath' => $basePath)
       );
