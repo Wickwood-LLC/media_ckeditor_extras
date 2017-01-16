@@ -290,6 +290,25 @@ function media_ckeditor_extras_add_styles_for_css_field($field_name) {
 }
 
 /**
+ * Implements hook_entity_view().
+ */
+function media_ckeditor_extras_entity_view($entity, $type, $view_mode, $langcode) {
+  // We can think about improving this part. Instead of loading 'CSS Class' field
+  // styles always. But we need to keep a map of pairs 'entity_type:entity_id' => field
+  // So, we can load these styles as required.
+  // However, that implementation will be of higher cost
+  // and may to worth as it will be only few line of styles from these
+  // 'CSS Class' fields in output
+  if ($type == 'node') {
+    $css_class_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', NULL, 'css_class');
+    foreach ($css_class_fields as $field_name) {
+      media_ckeditor_extras_add_styles_for_css_field($field_name);
+    }
+    drupal_add_css(drupal_get_path('module', 'media_ckeditor_extras') . '/css/media-ckeditor-extras.css');
+  }
+}
+
+/**
  * Implements hook_init()
  */
 function media_ckeditor_extras_init() {
