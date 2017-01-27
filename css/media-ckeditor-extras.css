@@ -1,9 +1,3 @@
-/* Add border to all media elements */
-.media-element-container .content,
-.media-element .content{
-  display: inline-block;
-}
-
 /* Clear the white space after image element as by default images are rendered like letter.*/
 .media-element-container .content img,
 .media-element .content img {
