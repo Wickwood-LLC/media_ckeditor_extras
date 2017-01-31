@@ -256,14 +256,18 @@ function media_ckeditor_extras_ckeditor_settings_alter(&$settings, $conf) {
       $styles .= "\n" . $field['settings']['css_style_text'];
     }
   }
+  $js_setting = array(
+    'media_ckeditor_extras' => array(
+      'styles' => array(
+        'file' => $styles,
+      ),
+    )
+  );
+  if (module_exists('picture')) {
+    $js_setting['media_ckeditor_extras']['lazysizes_path'] = drupal_get_path('module', 'picture') . '/lazysizes/lazysizes.js';
+  }
   drupal_add_js(
-    array(
-      'media_ckeditor_extras' => array(
-        'styles' => array(
-          "file" => $styles,
-        ),
-      )
-    ),
+    $js_setting,
     'setting'
   );
   global $base_path;

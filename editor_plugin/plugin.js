@@ -11,6 +11,19 @@
           CKEDITOR.addCss(Drupal.settings.media_ckeditor_extras.styles[index]);
         }
       }
+
+      if (Drupal.settings.media_ckeditor_extras.lazysizes_path) {
+        var js_path = Drupal.settings.basePath + Drupal.settings.media_ckeditor_extras.lazysizes_path;
+        editor.on( 'loaded', function() {
+          var script = CKEDITOR.document.createElement( 'script', {
+            attributes : {
+              type : 'text/javascript',
+              src: js_path,
+            }
+          });
+          editor.document.getHead().append(script);
+        });
+      }
     }
   };
   CKEDITOR.plugins.add( 'media_ckeditor_extras', pluginDefinition);
