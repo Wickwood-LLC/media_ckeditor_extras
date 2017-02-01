@@ -15,13 +15,16 @@
       if (Drupal.settings.media_ckeditor_extras.lazysizes_path) {
         var js_path = Drupal.settings.basePath + Drupal.settings.media_ckeditor_extras.lazysizes_path;
         editor.on( 'loaded', function() {
-          var script = CKEDITOR.document.createElement( 'script', {
-            attributes : {
-              type : 'text/javascript',
-              src: js_path,
-            }
-          });
-          editor.document.getHead().append(script);
+          if (editor.document) {
+            var script = CKEDITOR.document.createElement( 'script', {
+              attributes : {
+                type : 'text/javascript',
+                src: js_path,
+              }
+            });
+            var doc = editor.document;
+            doc.getHead().append(script);
+          }
         });
       }
     }
