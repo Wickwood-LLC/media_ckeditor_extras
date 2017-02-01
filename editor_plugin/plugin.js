@@ -14,7 +14,7 @@
 
       if (Drupal.settings.media_ckeditor_extras.lazysizes_path) {
         var js_path = Drupal.settings.basePath + Drupal.settings.media_ckeditor_extras.lazysizes_path;
-        editor.on( 'loaded', function() {
+        editor.on( 'instanceReady', function() {
           if (editor.document) {
             var script = CKEDITOR.document.createElement( 'script', {
               attributes : {
