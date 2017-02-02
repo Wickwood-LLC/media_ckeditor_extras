@@ -39,7 +39,7 @@
     </ul>
   </li>
   <li>Go to "<?php print l('Text formats', 'admin/config/content/formats'); ?>" page and for all input formats ensure "Convert Media tags to markup" filter comes before "Convert URLs into links" filter under "Filter processing order" as applicable.</li>
-  <li>Confirm that you have "Image" file display enabled for each of view modes at "<?php print l('Manage File Display', 'admin/structure/file-types/manage/image/file-display'); ?>" that need Media CKEditor Extras to work.</li>
+  <li>Confirm that you have "Image" file display enabled for each of view modes at "<?php print l('Manage File Display', 'admin/structure/file-types/manage/image/file-display'); ?>" that need Media CKEditor Extras to work. For responsive images, you have to enable "Picture" file display instead of "Image" (assuming Picture module is already installed and configured).</li>
   <li>To create a view mode to display image with caption:
     <ul>
       <li>Choose sub-tab for the view mode that will have a caption on <?php print l('Manage display', 'admin/structure/file-types/manage/image/display'); ?> page. (If you need to create new one first, you can do that on <?php print l('Entity view modes', 'admin/config/system/entity-view-modes'); ?>. This requires the “entity_view_mode” module.)</li>
