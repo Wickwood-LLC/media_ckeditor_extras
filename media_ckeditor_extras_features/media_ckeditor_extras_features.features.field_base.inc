@@ -86,6 +86,7 @@ function media_ckeditor_extras_features_field_default_field_bases() {
         'mce-align-center' => 'Center',
         'mce-align-right' => 'Right',
         'mce-align-left' => 'Left',
+        'mce-responsive' => 'Responsive full width (Video only)',
       ),
       'allowed_values_function' => '',
       'css_style_text' => 'div.media-element-container.mce-align-center,
@@ -108,7 +109,23 @@ div.media-element.mce-align-left {
   margin-right: 5px;
   margin-bottom: 5px;
 }
-',
+
+div.media-element-container.mce-responsive .content ,
+div.media-element.mce-responsive .content {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  padding-top: 25px;
+  height: 0;
+}
+
+div.media-element-container.mce-responsive .file-video .content iframe,
+div.media-element.mce-responsive .content img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}',
     ),
     'translatable' => 0,
     'type' => 'css_class',
