@@ -93,21 +93,22 @@ function media_ckeditor_extras_features_field_default_field_bases() {
 div.media-element.mce-align-center {
   display: table;
   margin: 0 auto;
+  margin-bottom: 0.5em;
 }
 div.media-element-container.mce-align-right,
 div.media-element.mce-align-right {
   float: right;
   margin-top: 5px;
-  margin-left: 5px;
-  margin-bottom: 5px;
+  margin-left: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 div.media-element-container.mce-align-left,
 div.media-element.mce-align-left {
   float: left;
   margin-top: 5px;
-  margin-right: 5px;
-  margin-bottom: 5px;
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 div.media-element-container.mce-responsive .content ,
