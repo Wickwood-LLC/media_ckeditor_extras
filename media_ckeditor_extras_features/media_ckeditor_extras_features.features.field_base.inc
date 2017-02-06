@@ -83,9 +83,9 @@ function media_ckeditor_extras_features_field_default_field_bases() {
     'module' => 'media_ckeditor_extras',
     'settings' => array(
       'allowed_values' => array(
+        'mce-align-left' => 'Left',
         'mce-align-center' => 'Center',
         'mce-align-right' => 'Right',
-        'mce-align-left' => 'Left',
         'mce-responsive' => 'Responsive full width (Video only)',
       ),
       'allowed_values_function' => '',
