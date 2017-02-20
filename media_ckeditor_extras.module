@@ -248,6 +248,8 @@ function media_ckeditor_extras_file_entity_file_type_form_submit($form, $form_st
  * Implements hook_ckeditor_settings_alter()
  */
 function media_ckeditor_extras_ckeditor_settings_alter(&$settings, $conf) {
+  // Load CSS styles from 'CSS Class' fields and add them to JS settings.
+  // Those styles will be loaded within CKEditor by editor_plugin/plugin.js file.
   $css_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', NULL, 'css_class');
   $styles = '';
   foreach ($css_fields as $field_name) {
@@ -263,6 +265,8 @@ function media_ckeditor_extras_ckeditor_settings_alter(&$settings, $conf) {
       ),
     )
   );
+
+  // Enable lazyloading of responsive images within CKEditor.
   if (module_exists('picture')) {
     $js_setting['media_ckeditor_extras']['lazysizes_path'] = drupal_get_path('module', 'picture') . '/lazysizes/lazysizes.js';
   }
