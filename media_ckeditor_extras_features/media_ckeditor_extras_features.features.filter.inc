@@ -10,13 +10,141 @@
 function media_ckeditor_extras_features_filter_default_formats() {
   $formats = array();
 
+  // Exported format: Advanced HTML.
+  $formats['advanced_html'] = array(
+    'format' => 'advanced_html',
+    'name' => 'Advanced HTML',
+    'cache' => 1,
+    'status' => 1,
+    'weight' => -9,
+    'filters' => array(
+      'media_filter' => array(
+        'weight' => -48,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'filter_url' => array(
+        'weight' => -47,
+        'status' => 1,
+        'settings' => array(
+          'filter_url_length' => 72,
+        ),
+      ),
+      'picture' => array(
+        'weight' => -46,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'image_resize_filter' => array(
+        'weight' => -45,
+        'status' => 1,
+        'settings' => array(
+          'link' => 0,
+          'link_class' => '',
+          'link_rel' => '',
+          'image_locations' => array(
+            'local' => 'local',
+            'remote' => 'remote',
+          ),
+        ),
+      ),
+      'filter_autop' => array(
+        'weight' => -38,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'filter_htmlcorrector' => array(
+        'weight' => -37,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'pathologic' => array(
+        'weight' => -36,
+        'status' => 1,
+        'settings' => array(
+          'settings_source' => 'local',
+          'local_paths' => '',
+          'protocol_style' => 'full',
+          'local_settings' => array(
+            'protocol_style' => 'full',
+            'local_paths' => '',
+          ),
+        ),
+      ),
+    ),
+  );
+
+  // Exported format: Basic HTML.
+  $formats['basic_html'] = array(
+    'format' => 'basic_html',
+    'name' => 'Basic HTML',
+    'cache' => 1,
+    'status' => 1,
+    'weight' => -8,
+    'filters' => array(
+      'media_filter' => array(
+        'weight' => -48,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'filter_url' => array(
+        'weight' => -44,
+        'status' => 1,
+        'settings' => array(
+          'filter_url_length' => 72,
+        ),
+      ),
+      'picture' => array(
+        'weight' => -43,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'image_resize_filter' => array(
+        'weight' => -42,
+        'status' => 1,
+        'settings' => array(
+          'link' => 0,
+          'link_class' => '',
+          'link_rel' => '',
+          'image_locations' => array(
+            'local' => 'local',
+            'remote' => 'remote',
+          ),
+        ),
+      ),
+      'filter_autop' => array(
+        'weight' => -38,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'filter_htmlcorrector' => array(
+        'weight' => -37,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'pathologic' => array(
+        'weight' => -36,
+        'status' => 1,
+        'settings' => array(
+          'settings_source' => 'local',
+          'local_paths' => '',
+          'protocol_style' => 'full',
+          'local_settings' => array(
+            'protocol_style' => 'full',
+            'local_paths' => '',
+          ),
+        ),
+      ),
+    ),
+  );
+
   // Exported format: Caption HTML.
   $formats['caption_html'] = array(
     'format' => 'caption_html',
     'name' => 'Caption HTML',
     'cache' => 1,
     'status' => 1,
-    'weight' => 0,
+    'weight' => -7,
     'filters' => array(
       'filter_html' => array(
         'weight' => -10,
@@ -44,6 +172,80 @@ function media_ckeditor_extras_features_filter_default_formats() {
           'settings_source' => 'global',
           'local_paths' => '',
           'protocol_style' => 'full',
+        ),
+      ),
+    ),
+  );
+
+  // Exported format: Full HTML.
+  $formats['full_html'] = array(
+    'format' => 'full_html',
+    'name' => 'Full HTML',
+    'cache' => 1,
+    'status' => 1,
+    'weight' => -10,
+    'filters' => array(
+      'media_filter' => array(
+        'weight' => -48,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'icon' => array(
+        'weight' => -47,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'wysiwyg_template_cleanup' => array(
+        'weight' => -46,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'filter_url' => array(
+        'weight' => -43,
+        'status' => 1,
+        'settings' => array(
+          'filter_url_length' => 72,
+        ),
+      ),
+      'picture' => array(
+        'weight' => -42,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'image_resize_filter' => array(
+        'weight' => -41,
+        'status' => 1,
+        'settings' => array(
+          'link' => 0,
+          'link_class' => '',
+          'link_rel' => '',
+          'image_locations' => array(
+            'local' => 'local',
+            'remote' => 'remote',
+          ),
+        ),
+      ),
+      'filter_autop' => array(
+        'weight' => -38,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'filter_htmlcorrector' => array(
+        'weight' => -37,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'pathologic' => array(
+        'weight' => -36,
+        'status' => 1,
+        'settings' => array(
+          'settings_source' => 'local',
+          'local_paths' => '',
+          'protocol_style' => 'full',
+          'local_settings' => array(
+            'protocol_style' => 'full',
+            'local_paths' => '',
+          ),
         ),
       ),
     ),
