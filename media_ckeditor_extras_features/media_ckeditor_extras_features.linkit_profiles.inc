@@ -161,15 +161,25 @@ function media_ckeditor_extras_features_default_linkit_profiles() {
   $linkit_profile->profile_type = '1';
   $linkit_profile->data = array(
     'text_formats' => array(
-      5 => '5',
+      'full_html' => 'full_html',
+      'advanced_html' => 'advanced_html',
+      'basic_html' => 'basic_html',
       'caption_html' => 'caption_html',
-      1 => 0,
-      2 => 0,
-      3 => 0,
-      6 => 0,
+      'panopoly_wysiwyg_text' => 0,
+      'panopoly_html_text' => 0,
+      'plain_text' => 0,
+      'php_code' => 0,
     ),
     'search_plugins' => array(
-      'entity:comment' => array(
+      'entity:search_api_index' => array(
+        'enabled' => 0,
+        'weight' => '-10',
+      ),
+      'entity:search_api_server' => array(
+        'enabled' => 0,
+        'weight' => '-10',
+      ),
+      'entity:fieldable_panels_pane' => array(
         'enabled' => 0,
         'weight' => '-10',
       ),
@@ -194,36 +204,53 @@ function media_ckeditor_extras_features_default_linkit_profiles() {
         'weight' => '-10',
       ),
     ),
-    'entity:comment' => array(
+    'entity:fieldable_panels_pane' => array(
       'result_description' => '',
       'bundles' => array(
-        'comment_node_blog' => 0,
-        'comment_node_media_gallery' => 0,
-        'comment_node_page' => 0,
-        'comment_node_panel' => 0,
-        'comment_node_story' => 0,
+        'basic_file' => 0,
+        'image' => 0,
+        'map' => 0,
+        'quick_links' => 0,
+        'spotlight' => 0,
+        'table' => 0,
+        'text' => 0,
+        'video' => 0,
       ),
       'group_by_bundle' => 0,
     ),
     'entity:node' => array(
       'result_description' => '',
       'bundles' => array(
-        'blog' => 0,
-        'media_gallery' => 0,
+        'article_post' => 0,
         'page' => 0,
+        'book' => 0,
+        'calendar_item' => 0,
+        'panopoly_page' => 0,
+        'panopoly_faq' => 0,
+        'feed' => 0,
+        'feed_item' => 0,
+        'panopoly_landing_page' => 0,
+        'panopoly_news_article' => 0,
         'panel' => 0,
-        'story' => 0,
+        'press_release' => 0,
+        'webform' => 0,
       ),
       'group_by_bundle' => 0,
       'include_unpublished' => 0,
     ),
+    'entity:search_api_server' => array(
+      'result_description' => '',
+    ),
+    'entity:search_api_index' => array(
+      'result_description' => '',
+    ),
     'entity:file' => array(
       'result_description' => '',
       'bundles' => array(
-        'audio' => 0,
-        'document' => 0,
         'image' => 0,
         'video' => 0,
+        'audio' => 0,
+        'document' => 0,
       ),
       'group_by_bundle' => 0,
       'show_scheme' => 0,
@@ -237,11 +264,9 @@ function media_ckeditor_extras_features_default_linkit_profiles() {
     'entity:taxonomy_term' => array(
       'result_description' => '',
       'bundles' => array(
-        'vocabulary_3' => 0,
-        'vocabulary_4' => 0,
-        'tags' => 0,
+        'panopoly_categories' => 0,
+        'calendar_tags' => 0,
         'media_folders' => 0,
-        'gallery_collections' => 0,
       ),
       'group_by_bundle' => 0,
     ),
@@ -251,16 +276,11 @@ function media_ckeditor_extras_features_default_linkit_profiles() {
     'entity:menu_link' => array(
       'result_description' => '',
       'bundles' => array(
-        'menu-current-year-conference' => 0,
         'devel' => 0,
-        'features' => 0,
         'main-menu' => 0,
         'management' => 0,
         'navigation' => 0,
-        'menu-past-conference' => 0,
-        'secondary-menu' => 0,
         'user-menu' => 0,
-        'menu-xmlsitemap' => 0,
       ),
       'group_by_bundle' => 0,
     ),
