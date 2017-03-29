@@ -1,5 +1,20 @@
 <?php
 
+function _media_ckeditor_extras_get_long_text_field_instances() {
+  $field_instances = array();
+  $node_field_instances = field_info_instances('node');
+  foreach ($node_field_instances as $bundle => $content_type_field_instances) {
+    foreach ($content_type_field_instances as $field_name => $content_type_field_instance) {
+      $field = field_info_field_by_id($content_type_field_instance['field_id']);
+      // Only process long-text fields.
+      if (in_array($field['type'], array('text_long', 'text_with_summary'))) {
+        $field_instances[] = $content_type_field_instance;
+      }
+    }
+  }
+  return $field_instances;
+}
+
  /**
   * Implements hook_drush_command().
   */
@@ -27,28 +42,21 @@ function drush_media_ckeditor_extras_configure_long_text_fields() {
     return;
   }
 
-  $node_field_instances = field_info_instances('node');
-  foreach ($node_field_instances as $bundle => $content_type_field_instances) {
-    foreach ($content_type_field_instances as $field_name => $content_type_field_instance) {
-      $field = field_info_field_by_id($content_type_field_instance['field_id']);
-      // Only process long-text fields.
-      if (in_array($field['type'], array('text_long', 'text_with_summary'))) {
-        // Enable text processing.
-        $content_type_field_instance['settings']['text_processing'] = 1;
-        // Check "Limit allowed text formats"
-        $content_type_field_instance['settings']['better_formats']['allowed_formats_toggle'] = 1;
-        // Uncheck all text formats.
-        $content_type_field_instance['settings']['better_formats']['allowed_formats'] = array();
-        foreach ($formats as $format_name => $format) {
-          $content_type_field_instance['settings']['better_formats']['allowed_formats'][$format_name] = 0;
-        }
-        // Now check full html format only.
-        $content_type_field_instance['settings']['better_formats']['allowed_formats']['full_html'] = 'full_html';
-        // Save field instance configuration.
-        field_update_instance($content_type_field_instance);
-        drupal_set_message(t('Updated "%label" field of %bundle content type', array('%label' => $content_type_field_instance['label'], '%bundle' => $content_type_field_instance['bundle'])));
-      }
+  $long_text_field_instances = _media_ckeditor_extras_get_long_text_field_instances();
+  foreach ($long_text_field_instances as $content_type_field_instance) {
+    // Enable text processing.
+    $content_type_field_instance['settings']['text_processing'] = 1;
+    // Check "Limit allowed text formats"
+    $content_type_field_instance['settings']['better_formats']['allowed_formats_toggle'] = 1;
+    // Uncheck all text formats.
+    $content_type_field_instance['settings']['better_formats']['allowed_formats'] = array();
+    foreach ($formats as $format_name => $format) {
+      $content_type_field_instance['settings']['better_formats']['allowed_formats'][$format_name] = 0;
     }
-
+    // Now check full html format only.
+    $content_type_field_instance['settings']['better_formats']['allowed_formats']['full_html'] = 'full_html';
+    // Save field instance configuration.
+    field_update_instance($content_type_field_instance);
+    drupal_set_message(t('Updated "%label" field of %bundle content type', array('%label' => $content_type_field_instance['label'], '%bundle' => $content_type_field_instance['bundle'])));
   }
 }
