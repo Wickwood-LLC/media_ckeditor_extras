@@ -51,15 +51,26 @@ function _media_ckeditor_extras_get_long_text_field_instances() {
  * Drush command to configure all long-text field instances for its text format.
  */
 function drush_media_ckeditor_extras_configure_long_text_fields() {
-  $formats = filter_formats();
-  if (!isset($formats['full_html'])) {
-    drupal_set_message(t('"Full HTML" text format not found.'), 'error');
-    return;
-  }
-  elseif (!module_exists('better_formats')) {
+  if (!module_exists('better_formats')) {
     drupal_set_message(t('better_formats module is required.'), 'error');
     return;
   }
+
+  // Prepare filter format options for user selection.
+  $filter_formats = filter_formats();
+  $filter_format_options = array();
+  $filter_formats_by_name = array();
+  foreach ($filter_formats as $filter_format) {
+    $filter_format_options[$filter_format->name] = $filter_format->name;
+    $filter_formats_by_name[$filter_format->name] = $filter_format;
+  }
+
+  // Ask user to select target text format.
+  $target_format_name = drush_choice($filter_format_options, dt('Select text format that is to be used as replacement?'));
+  if (empty($target_format_name)) {
+    drush_die(dt('You did not choose any text formats.'));
+  }
+  $target_format = $filter_formats_by_name[$target_format_name]->format;
 
   $long_text_field_instances = _media_ckeditor_extras_get_long_text_field_instances();
   foreach ($long_text_field_instances as $content_type_field_instance) {
@@ -69,11 +80,11 @@ function drush_media_ckeditor_extras_configure_long_text_fields() {
     $content_type_field_instance['settings']['better_formats']['allowed_formats_toggle'] = 1;
     // Uncheck all text formats.
     $content_type_field_instance['settings']['better_formats']['allowed_formats'] = array();
-    foreach ($formats as $format_name => $format) {
+    foreach ($filter_formats as $format_name => $format) {
       $content_type_field_instance['settings']['better_formats']['allowed_formats'][$format_name] = 0;
     }
-    // Now check full html format only.
-    $content_type_field_instance['settings']['better_formats']['allowed_formats']['full_html'] = 'full_html';
+    // Now check selected format only.
+    $content_type_field_instance['settings']['better_formats']['allowed_formats'][$target_format] = $target_format;
     // Save field instance configuration.
     field_update_instance($content_type_field_instance);
     drupal_set_message(t('Updated "%label" field of %bundle content type', array('%label' => $content_type_field_instance['label'], '%bundle' => $content_type_field_instance['bundle'])));
