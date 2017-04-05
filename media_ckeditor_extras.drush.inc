@@ -119,14 +119,41 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
   );
 }
 
+function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field_instance, $target_format) {
+  $filter_formats = filter_formats();
+
+  // Enable text processing.
+  $field_instance['settings']['text_processing'] = 1;
+  // Check "Limit allowed text formats"
+  $field_instance['settings']['better_formats']['allowed_formats_toggle'] = 1;
+  // Uncheck all text formats.
+  $field_instance['settings']['better_formats']['allowed_formats'] = array();
+  foreach ($filter_formats as $format_name => $format) {
+    $field_instance['settings']['better_formats']['allowed_formats'][$format_name] = 0;
+  }
+  // Now check selected format only.
+  $field_instance['settings']['better_formats']['allowed_formats'][$target_format] = $target_format;
+  // Save field instance configuration.
+  field_update_instance($field_instance);
+  drupal_set_message(t('Updated "%label" field of %bundle content type', array('%label' => $field_instance['label'], '%bundle' => $field_instance['bundle'])));
+}
+
  /**
   * Implements hook_drush_command().
   */
  function media_ckeditor_extras_drush_command() {
    $items = array();
 
-    $items['media-ckeditor-extras-configure-long-text-fields'] = array(
+    $items['media-ckeditor-extras-configure-all-long-text-fields'] = array(
       'description' => "Configure all long-text fields for input format.",
+    );
+
+    $items['media-ckeditor-extras-configure-single-long-text-field'] = array(
+      'description' => "Configure single long-text field for input format.",
+      'arguments' => array(
+        'field_instance' => "Field instance in the form of <content-type>:<field-name>. For example, page:body",
+        'target_format' => "Target format machine name",
+      ),
     );
 
     $items['media-ckeditor-extras-long-text-values-reassign-formats'] = array(
@@ -155,7 +182,7 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
 /**
  * Drush command to configure all long-text field instances for its text format.
  */
-function drush_media_ckeditor_extras_configure_long_text_fields() {
+function drush_media_ckeditor_extras_configure_all_long_text_fields() {
   if (!module_exists('better_formats')) {
     drupal_set_message(t('better_formats module is required.'), 'error');
     return;
@@ -178,22 +205,37 @@ function drush_media_ckeditor_extras_configure_long_text_fields() {
   $target_format = $filter_formats_by_name[$target_format_name]->format;
 
   $long_text_field_instances = _media_ckeditor_extras_get_long_text_field_instances();
-  foreach ($long_text_field_instances as $content_type_field_instance) {
-    // Enable text processing.
-    $content_type_field_instance['settings']['text_processing'] = 1;
-    // Check "Limit allowed text formats"
-    $content_type_field_instance['settings']['better_formats']['allowed_formats_toggle'] = 1;
-    // Uncheck all text formats.
-    $content_type_field_instance['settings']['better_formats']['allowed_formats'] = array();
-    foreach ($filter_formats as $format_name => $format) {
-      $content_type_field_instance['settings']['better_formats']['allowed_formats'][$format_name] = 0;
-    }
-    // Now check selected format only.
-    $content_type_field_instance['settings']['better_formats']['allowed_formats'][$target_format] = $target_format;
-    // Save field instance configuration.
-    field_update_instance($content_type_field_instance);
-    drupal_set_message(t('Updated "%label" field of %bundle content type', array('%label' => $content_type_field_instance['label'], '%bundle' => $content_type_field_instance['bundle'])));
+  foreach ($long_text_field_instances as $field_instance) {
+    _media_ckeditor_extras_configure_long_text_field_to_limit_format($field_instance, $target_format);
   }
+}
+
+function drush_media_ckeditor_extras_configure_single_long_text_field($field_instance_arg, $target_format) {
+  list ($content_type_name, $field_instance_name) = explode(':', $field_instance_arg);
+  if (!empty($content_type_name)) {
+    $content_type = node_type_load($content_type_name);
+  }
+  if (!empty($field_instance_name) && !empty($content_type)) {
+    $field_instance = field_info_instance('node', $field_instance_name, $content_type_name);
+  }
+  if (empty($content_type) || empty($field_instance)) {
+    drupal_set_message(dt('Invalid field instance name.'), 'error');
+    return;
+  }
+
+  $filter_formats = filter_formats();
+  $filter_formats_by_format = array();
+  foreach ($filter_formats as $filter_format) {
+    $filter_formats_by_format[$filter_format->format] = $filter_format;
+  }
+  $filter_format_formats = array_keys($filter_formats_by_format);
+
+  if (!in_array($target_format, $filter_format_formats)) {
+    drupal_set_message(dt('Invalid target format name.'), 'error');
+    return;
+  }
+
+  _media_ckeditor_extras_configure_long_text_field_to_limit_format($field_instance, $target_format);
 }
 
 function drush_media_ckeditor_extras_long_text_values_reassign_formats() {
