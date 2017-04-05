@@ -30,19 +30,124 @@ function _media_ckeditor_extras_get_long_text_field_instances() {
   return $field_instances;
 }
 
+function _media_ckeditor_extras_get_field_current_table($field) {
+  $field_current_tbl_name = array_keys($field['storage']['details']['sql']['FIELD_LOAD_CURRENT']);
+  return  reset($field_current_tbl_name);
+}
+
+function _media_ckeditor_extras_get_field_revision_table($field) {
+  $field_revision_tbl_name = array_keys($field['storage']['details']['sql']['FIELD_LOAD_REVISION']);
+  return  reset($field_revision_tbl_name);
+}
+
+function _media_ckeditor_extras_long_text_field_current_table_get_format_column($field) {
+  $table = _media_ckeditor_extras_get_field_current_table($field);
+  return $field['storage']['details']['sql']['FIELD_LOAD_CURRENT'][$table]['format'];
+}
+
+function _media_ckeditor_extras_long_text_field_revision_table_get_format_column($field) {
+  $table = _media_ckeditor_extras_get_field_revision_table($field);
+  return $field['storage']['details']['sql']['FIELD_LOAD_REVISION'][$table]['format'];
+}
+
+function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $source_formats, $target_format, $content_type = NULL) {
+  $field_current_table =  _media_ckeditor_extras_get_field_current_table($field);
+  $field_revision_table = _media_ckeditor_extras_get_field_revision_table($field);
+
+  $current_table_format_field = _media_ckeditor_extras_long_text_field_current_table_get_format_column($field);
+  $revision_table_format_field = _media_ckeditor_extras_long_text_field_revision_table_get_format_column($field);
+
+  $total_query = db_select($field_current_table, 'f')
+    ->condition('f.deleted', 0)
+    ->condition('f.entity_type', 'node');
+  $total_query->join('node', 'n', 'f.entity_id = n.nid AND f.revision_id = n.vid');
+  if (!empty($content_type)) {
+    $total_query->condition('n.type', $content_type);
+  }
+  $current_total_count = $total_query->countQuery()->execute()->fetchField();
+
+  $applicable_query = clone $total_query;
+  $applicable_query->condition("f.{$current_table_format_field}", $source_formats, 'IN');
+  $current_applicable_count = $applicable_query->countQuery()->execute()->fetchField();
+
+  $query_args = array(':target_format' => $target_format, ':source_formats' => $source_formats);
+  if (!empty($content_type)) {
+    $content_type_condition = " AND n.type = :content_type ";
+    $query_args[':content_type'] = $content_type;
+  }
+  $sql = "
+    UPDATE {{$field_current_table}} AS f
+    INNER JOIN node AS n ON f.entity_id = n.nid AND f.revision_id = n.vid
+    SET f.$current_table_format_field = :target_format
+    WHERE f.deleted = 0 AND
+      f.entity_type = 'node' AND
+      f.$current_table_format_field IN (:source_formats) $content_type_condition";
+  db_query($sql, $query_args);
+
+  $total_query = db_select($field_revision_table, 'f')
+    ->condition('f.deleted', 0)
+    ->condition('f.entity_type', 'node');
+  $total_query->join('node', 'n', 'f.entity_id = n.nid AND f.revision_id = n.vid');
+  if (!empty($content_type)) {
+    $total_query->condition('n.type', $content_type);
+  }
+  $revision_total_count = $total_query->countQuery()->execute()->fetchField();
+
+  $applicable_query = clone $total_query;
+  $applicable_query->condition("f.{$revision_table_format_field}", $source_formats, 'IN');
+  $revision_applicable_count = $applicable_query->countQuery()->execute()->fetchField();
+
+  $query_args = array(':target_format' => $target_format, ':source_formats' => $source_formats);
+  if (!empty($content_type)) {
+    $content_type_condition = " AND n.type = :content_type ";
+    $query_args[':content_type'] = $content_type;
+  }
+  $sql = "
+    UPDATE {{$field_revision_table}} AS f
+    INNER JOIN node AS n ON f.entity_id = n.nid AND f.revision_id = n.vid
+    SET f.$revision_table_format_field = :target_format
+    WHERE f.deleted = 0 AND
+      f.entity_type = 'node' AND
+      f.$revision_table_format_field IN (:source_formats) $content_type_condition";
+  db_query($sql, $query_args);
+
+  printf(
+    "%s (%s: %d/%d, %s: %d/%d)\n",
+    $field['field_name'],
+    $field_current_table, $current_applicable_count, $current_total_count,
+    $field_revision_table, $revision_applicable_count, $revision_total_count
+  );
+}
+
  /**
   * Implements hook_drush_command().
   */
  function media_ckeditor_extras_drush_command() {
    $items = array();
 
-   $items['media-ckeditor-extras-configure-long-text-fields'] = array(
-     'description' => "Configure all long-text fields for input format.",
-   );
+    $items['media-ckeditor-extras-configure-long-text-fields'] = array(
+      'description' => "Configure all long-text fields for input format.",
+    );
 
-   $items['media-ckeditor-extras-long-text-values-reassign-formats'] = array(
-     'description' => "Re-assign text format for all long text fields of nodes.",
-   );
+    $items['media-ckeditor-extras-long-text-values-reassign-formats'] = array(
+      'description' => "Re-assign text format for all long text fields of nodes.",
+    );
+
+    $items['media-ckeditor-extras-long-text-field-statistics'] = array(
+      'description' => "Show number of usage of each text format",
+      'arguments' => array(
+        'field_instance'        => "Field instance in the form of <content-type>:<field-name>. For example, page:body",
+      ),
+    );
+
+    $items['media-ckeditor-extras-long-text-field-reassign-format'] = array(
+      'description' => "Re-assign text format for a specific content type long text field values.",
+      'arguments' => array(
+        'field_instance' => "Field instance in the form of <content-type>:<field-name>. For example, page:body",
+        'source_format' => "Source format machine name",
+        'target_format' => "Target format machine name",
+      ),
+    );
 
    return $items;
  }
@@ -122,58 +227,76 @@ function drush_media_ckeditor_extras_long_text_values_reassign_formats() {
   $fields = _media_ckeditor_extras_get_long_text_fields();
 
   foreach ($fields as  $field) {
-    $field_current_tbl_name = array_keys($field['storage']['details']['sql']['FIELD_LOAD_CURRENT']);
-    $field_revision_tbl_name = array_keys($field['storage']['details']['sql']['FIELD_LOAD_REVISION']);
-    $field_current_table =  reset($field_current_tbl_name);
-    $field_revision_table =  reset($field_revision_tbl_name);
-
-    $current_table_format_field = $field['storage']['details']['sql']['FIELD_LOAD_CURRENT'][$field_current_table]['format'];
-    $revision_table_format_field = $field['storage']['details']['sql']['FIELD_LOAD_REVISION'][$field_revision_table]['format'];
-
-    $total_query = db_select($field_current_table, 'f')
-      ->condition('f.deleted', 0)
-      ->condition('f.entity_type', 'node');
-    $total_query->join('node', 'n', 'f.entity_id = n.nid AND f.revision_id = n.vid');
-    $current_total_count = $total_query->countQuery()->execute()->fetchField();
-
-    $applicable_query = clone $total_query;
-    $applicable_query->condition("f.{$current_table_format_field}", $source_formats, 'IN');
-    $current_applicable_count = $applicable_query->countQuery()->execute()->fetchField();
-
-    $sql = "
-      UPDATE {{$field_current_table}} AS f
-      INNER JOIN node AS n ON f.entity_id = n.nid AND f.revision_id = n.vid
-      SET f.$current_table_format_field = :target_format
-      WHERE f.deleted = 0 AND
-        f.entity_type = 'node' AND
-        f.$current_table_format_field IN (:source_formats)";
-    db_query($sql, array(':target_format' => $target_format, ':source_formats' => $source_formats));
-
-    $total_query = db_select($field_revision_table, 'f')
-      ->condition('f.deleted', 0)
-      ->condition('f.entity_type', 'node');
-    $total_query->join('node', 'n', 'f.entity_id = n.nid AND f.revision_id = n.vid');
-    $revision_total_count = $total_query->countQuery()->execute()->fetchField();
-
-    $applicable_query = clone $total_query;
-    $applicable_query->condition("f.{$revision_table_format_field}", $source_formats, 'IN');
-    $revision_applicable_count = $applicable_query->countQuery()->execute()->fetchField();
-
-    $sql = "
-      UPDATE {{$field_revision_table}} AS f
-      INNER JOIN node AS n ON f.entity_id = n.nid AND f.revision_id = n.vid
-      SET f.$revision_table_format_field = :target_format
-      WHERE f.deleted = 0 AND
-        f.entity_type = 'node' AND
-        f.$revision_table_format_field IN (:source_formats)";
-    db_query($sql, array(':target_format' => $target_format, ':source_formats' => $source_formats));
-
-    printf(
-      "%s (%s: %d/%d, %s: %d/%d)\n",
-      $field['field_name'],
-      $field_current_table, $current_applicable_count, $current_total_count,
-      $field_revision_table, $revision_applicable_count, $revision_total_count
-    );
+    _media_ckeditor_extras_long_text_field_reassign_text_format($field, $source_formats, $target_format);
   }
   drush_invoke('cc', array('all'));
+}
+
+function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_arg) {
+  list ($content_type_name, $field_instance_name) = explode(':', $field_instance_arg);
+  if (!empty($content_type_name)) {
+    $content_type = node_type_load($content_type_name);
+  }
+  if (!empty($field_instance_name) && !empty($content_type)) {
+    $field_instance = field_info_instance('node', $field_instance_name, $content_type_name);
+  }
+  if (empty($content_type) || empty($field_instance)) {
+    drupal_set_message(dt('Invalid field instance name.'), 'error');
+    return;
+  }
+
+  $field = field_info_field($field_instance['field_name']);
+  $field_current_table =  _media_ckeditor_extras_get_field_current_table($field);
+  $field_revision_table = _media_ckeditor_extras_get_field_revision_table($field);
+
+  $current_table_format_field = _media_ckeditor_extras_long_text_field_current_table_get_format_column($field);
+  $revision_table_format_field = _media_ckeditor_extras_long_text_field_revision_table_get_format_column($field);
+
+  print dt("Content type: @content_type, Field: @field", array('@content_type' => $content_type_name, '@field' => $field_instance_name)) . PHP_EOL;
+
+  $total_query = db_select($field_current_table, 'f')
+    ->condition('f.deleted', 0)
+    ->condition('f.entity_type', 'node');
+  $total_query->join('node', 'n', 'f.entity_id = n.nid AND f.revision_id = n.vid');
+  $total_query->addExpression('COUNT(f.entity_type)', 'count');
+  $total_query->condition('n.type', $content_type_name)
+    ->fields('f', array($current_table_format_field))
+    ->groupBy('f.' . $current_table_format_field);
+  $result = $total_query->execute();
+  foreach ($result as $row) {
+    print dt('@count items using @format format', array('@count' => $row->count, '@format' => $row->{$current_table_format_field} )) . PHP_EOL;
+  }
+
+  print PHP_EOL;
+  //var_dump($field_current_table, $field_revision_table);
+}
+
+function drush_media_ckeditor_extras_long_text_field_reassign_format($field_instance_arg, $source_format, $target_format) {
+  list ($content_type_name, $field_instance_name) = explode(':', $field_instance_arg);
+  if (!empty($content_type_name)) {
+    $content_type = node_type_load($content_type_name);
+  }
+  if (!empty($field_instance_name) && !empty($content_type)) {
+    $field_instance = field_info_instance('node', $field_instance_name, $content_type_name);
+  }
+  if (empty($content_type) || empty($field_instance)) {
+    drupal_set_message(dt('Invalid field instance name.'), 'error');
+    return;
+  }
+
+  $filter_formats = filter_formats();
+  $filter_formats_by_format = array();
+  foreach ($filter_formats as $filter_format) {
+    $filter_formats_by_format[$filter_format->format] = $filter_format;
+  }
+  $filter_format_formats = array_keys($filter_formats_by_format);
+
+  if (!in_array($source_format, $filter_format_formats) || !in_array($target_format, $filter_format_formats)) {
+    drupal_set_message(dt('Invalid source and/or target format name.'), 'error');
+    return;
+  }
+
+  $field = field_info_field($field_instance['field_name']);
+
+  _media_ckeditor_extras_long_text_field_reassign_text_format($field, array($source_format), $target_format, $content_type_name);
 }
