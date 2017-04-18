@@ -106,13 +106,39 @@ function media_ckeditor_extras_preprocess_file_entity(&$variables) {
     if (isset($file_wrapper->{$link_field_name})) {
       $link = $file_wrapper->{$link_field_name}->value();
       // Ensure we are altering data for 'image_formatter' theme to avoid surprices.
-      if (!empty($link['url']) && $variables['content']['file']['#theme'] == 'image_formatter') {
-        $variables['content']['file']['#path']['path'] = $link['url'];
-        if (!empty($link['attributes']['target'])) {
-          $variables['content']['file']['#path']['options']['attributes']['target'] = $link['attributes']['target'];
+      if (!empty($link['url'])) {
+        if ($variables['content']['file']['#theme'] == 'image_style') {
+          $old_file_renderable = $variables['content']['file'];
+          $variables['content']['file'] = array();
+          $variables['content']['file']['#theme'] = 'image_formatter';
+          $variables['content']['file']['#item'] = array();
+          $variables['content']['file']['#item']['uri'] = $old_file_renderable['#path'];
+          if (!empty($old_file_renderable['#width'])) {
+            $variables['content']['file']['#item']['width'] = $old_file_renderable['#width'];
+          }
+          if (!empty($old_file_renderable['#height'])) {
+            $variables['content']['file']['#item']['height'] = $old_file_renderable['#height'];
+          }
+          if (!empty($old_file_renderable['#alt'])) {
+            $variables['content']['file']['#item']['alt'] = $old_file_renderable['#alt'];
+          }
+          if (!empty($old_file_renderable['#title'])) {
+            $variables['content']['file']['#item']['title'] = $old_file_renderable['#title'];
+          }
+          if (!empty($old_file_renderable['#attributes'])) {
+            $variables['content']['file']['#item']['attributes'] = $old_file_renderable['#attributes'];
+          }
+
+          $variables['content']['file']['#image_style'] = $old_file_renderable['#style_name'];
         }
-        if (!empty($link['attributes']['class'])) {
-          $variables['content']['file']['#path']['options']['attributes']['class'][] = $link['attributes']['class'];
+        if ($variables['content']['file']['#theme'] == 'image_formatter') {
+          $variables['content']['file']['#path']['path'] = $link['url'];
+          if (!empty($link['attributes']['target'])) {
+            $variables['content']['file']['#path']['options']['attributes']['target'] = $link['attributes']['target'];
+          }
+          if (!empty($link['attributes']['class'])) {
+            $variables['content']['file']['#path']['options']['attributes']['class'][] = $link['attributes']['class'];
+          }
         }
       }
     }
