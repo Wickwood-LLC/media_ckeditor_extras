@@ -368,3 +368,20 @@ function media_ckeditor_extras_advanced_help_topic_info_alter(&$ini) {
   // Disabled advance help for this module. We do not support advanced help.
   unset($ini['topics']['media_ckeditor_extras']);
 }
+
+/**
+ * Implements hook_form_alter()
+ */
+function media_ckeditor_extras_form_alter(&$form, &$form_state, $form_id) {
+  // Hide MCE link and placement fields in froms other than media borwser.
+  if ($form_id == 'file_entity_edit' || preg_match('/^media_edit_\d+$/', $form_id)) {
+    $file_type = $form['#entity']->type;
+    $link_field_name = variable_get("media_ckeditor_extras_file_{$file_type}_link", '_none');
+    if (!empty($link_field_name) && $link_field_name != '_none' && !empty($form[$link_field_name])) {
+      $form[$link_field_name]['#access'] = FALSE;
+    }
+    if (!empty($form['field_media_placement'])) {
+      $form['field_media_placement']['#access'] = FALSE;
+    }
+  }
+}
