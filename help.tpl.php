@@ -48,10 +48,17 @@
   </li>
   <li>To restrict available view modes in Media Browser popup:
     <ul>
-      <li>Open <?php print l('Image type edit', 'admin/structure/file-types/manage/image'); ?> page.</li>
-      <li>Expand "Media WYSIWYG View Modes" field set</li>
-      <li>Enable "Restrict allowed view modes when embedding with the WYSIWYG". Then enable checkboxes for each of view modes that should be hidden on Media Browser popup.</li>
+      <li>Open each view mode sub-tab within <?php print l('Manage File Display', 'admin/structure/file-types/manage/image/file-display'); ?> page.</li>
+      <li>Select "Restrict in WYSIWYG" checkbox if that view mode to be not shown in Media Browser popup, then save page.</li>
+      <li>Repeat above steps for each file type (image, audio, video, etc) as needed.</li>
     </ul>
   </li>
-  <li>Lastly, although it is not directly part of this Media-CKEditor stack, we also recommend installing and enabling the the ckeditor_widgets module to provide templates for adding content within the CKEditor.</li>
+  <li>To make a media video field output responsive:
+    <ul>
+      <li>Ensure "Feild Formatter Class" module is installed.</li>
+      <li>Open "Manage Display" page for that content type and edit field formatter for that field.</li>
+      <li>Specify "mce-video-responsive" CSS class within "Field Formatter Class" textfield.</li>
+      <li>Click "Update" and click "Save" button on bottom of page to save configuration changes made.</li>
+    </ul>
+  </li>
 </ul>
