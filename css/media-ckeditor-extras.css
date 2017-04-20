@@ -10,3 +10,20 @@
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid black;
 }
+
+/*
+These style are to make video from a media field as responsive. The video fields are required to add 'wwm-video-responsive' in its field formatter settings.
+*/
+.wwm-video-responsive .file-video > .content {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 25px;
+  height: 0;
+}
+.wwm-video-responsive iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
