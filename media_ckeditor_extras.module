@@ -73,6 +73,11 @@ function media_ckeditor_extras_media_wysiwyg_token_to_markup_alter(&$element, $t
   // Add classes for image when entity is viewed.
   if (empty($settings['wysiwyg'])) {
     $css_data = media_ckeditor_extras_get_css_classes_and_styles($entity_type, $file);
+    // For some elements it may be just string. So convert to array for merging.
+    // Specific use of this one is when 'Field Formatter Class' used in field to sepcify class name in simple textfield.
+    if (!is_array($element['content']['#attributes']['class'])) {
+      $element['content']['#attributes']['class'] = array($element['content']['#attributes']['class']);
+    }
     $element['content']['#attributes']['class'] = array_merge($element['content']['#attributes']['class'], $css_data['class']);
     drupal_add_css($css_data['styles'], array('type' => 'inline'));
   }
