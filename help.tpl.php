@@ -21,8 +21,10 @@
     <ul>
       <li>Select "Full file entity rendering" option for "How should file entities be rendered within a text field?" under "WYSIWYG Configuration" section.</li>
       <li>Enable "Display fully rendered files in WYSIWYG" checkbox under "CKEditor WYSIWYG Configuration" section.</li>
+      <li>Select "CSS Class" and "Link" fields under "Override field types in WYSIWYG"</li>
     </ul>
   </li>
+  <li>Go to "Manage Fields" page for each file type. Edit "Media Placement" field then enable "Override in WYSIWYG" checkbox. Do same for "Image link" field in image file type.</li>
   <li>Go to <?php print l('Permissions', 'admin/people/permissions'); ?> page and grant permissions 'Use the Caption HTML text format' and 'View overridden file entities in wysiwyg' to roles as required. The 'Use the Caption HTML text format' permission should typically be granted to roles like: Contributor, Editor, Administrator and Webmaster. The 'View overridden file entities in wysiwyg'  permission can probably be granted to 'Authenticated User' role.</li>
   <li>Go to <?php print l('CKEditor Global profile', 'admin/config/content/ckeditor/editg'); ?> page. Ensure plugin path on field "Path to the CKEditor plugins directory" is correctly configured. You can specify <strong>'%l/ckeditor/plugins'</strong> if CKEditor is put in libraries directory.</li>
   <li>Go to <?php print l('CKEditor profiles list', 'admin/config/content/ckeditor'); ?> and:
@@ -55,7 +57,7 @@
   </li>
   <li>To make a media video field output responsive:
     <ul>
-      <li>Ensure "Feild Formatter Class" module is installed.</li>
+      <li>Ensure "Field Formatter Class" module is installed.</li>
       <li>Open "Manage Display" page for that content type and edit field formatter for that field.</li>
       <li>Specify "mce-video-responsive" CSS class within "Field Formatter Class" textfield.</li>
       <li>Click "Update" and click "Save" button on bottom of page to save configuration changes made.</li>
