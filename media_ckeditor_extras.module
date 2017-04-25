@@ -248,27 +248,30 @@ function media_ckeditor_extras_options_list($field, $instance, $entity_type, $en
  * Implements hook_form_FORM_ID_alter()
  */
 function media_ckeditor_extras_form_file_entity_file_type_form_alter(&$form, $form_state) {
-  $form['media_ckeditor_extras'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Media CKEditor Extras'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $options = array('_none' => t('None'));
-  $link_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', $form['#file_type']->type, 'link_field');
-  foreach ($link_fields as $field_name) {
-    $options[$field_name] = $field_name;
-  }
-  $form['media_ckeditor_extras']['media_ckeditor_extras_link'] = array(
-    '#type' => 'select',
-    '#title' => t('Link'),
-    '#description' => t('Select the link field that will be used to link the image.'),
-    '#options' => $options,
-    '#default_value' => variable_get("media_ckeditor_extras_file_{$form['#file_type']->type}_link", '_none'),
-    '#required' => FALSE,
-  );
+  // Now we have setting that only relevant to images.
+  if ($form['#file_type']->type == 'image') {
+    $form['media_ckeditor_extras'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Media CKEditor Extras'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    $options = array('_none' => t('None'));
+    $link_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', $form['#file_type']->type, 'link_field');
+    foreach ($link_fields as $field_name) {
+      $options[$field_name] = $field_name;
+    }
+    $form['media_ckeditor_extras']['media_ckeditor_extras_link'] = array(
+      '#type' => 'select',
+      '#title' => t('Link'),
+      '#description' => t('Select the link field that will be used to link the image.'),
+      '#options' => $options,
+      '#default_value' => variable_get("media_ckeditor_extras_file_{$form['#file_type']->type}_link", '_none'),
+      '#required' => FALSE,
+    );
 
-  $form['#submit'][] = 'media_ckeditor_extras_file_entity_file_type_form_submit';
+    $form['#submit'][] = 'media_ckeditor_extras_file_entity_file_type_form_submit';
+  }
 }
 
 function media_ckeditor_extras_file_entity_file_type_form_submit($form, $form_state) {
