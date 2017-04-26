@@ -382,7 +382,7 @@ function media_ckeditor_extras_advanced_help_topic_info_alter(&$ini) {
  */
 function media_ckeditor_extras_form_alter(&$form, &$form_state, $form_id) {
   // Hide MCE link and placement fields in froms other than media borwser.
-  if (in_array($form_id, array('file_entity_edit', 'file_entity_add_upload')) || preg_match('/^media_edit_\d+$/', $form_id)) {
+  if (in_array($form_id, array('file_entity_edit', 'file_entity_add_upload', 'media_internet_add_upload')) || preg_match('/^media_edit_\d+$/', $form_id)) {
     $file_type = $form['#entity']->type;
     $link_field_name = variable_get("media_ckeditor_extras_file_{$file_type}_link", '_none');
     if (!empty($link_field_name) && $link_field_name != '_none' && !empty($form[$link_field_name])) {
