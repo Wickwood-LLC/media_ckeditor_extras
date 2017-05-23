@@ -176,6 +176,10 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
       ),
     );
 
+    $items['media-ckeditor-extras-detect-file-types'] = array(
+      'description' => "Detect and assign file types to files that are still having 'default' as file type.",
+    );
+
    return $items;
  }
 
@@ -341,4 +345,22 @@ function drush_media_ckeditor_extras_long_text_field_reassign_format($field_inst
   $field = field_info_field($field_instance['field_name']);
 
   _media_ckeditor_extras_long_text_field_reassign_text_format($field, array($source_format), $target_format, $content_type_name);
+}
+
+function drush_media_ckeditor_extras_detect_file_types() {
+  $result = db_select('file_managed', 'f')
+    ->fields('f', array('fid', 'filename'))
+    ->condition('type', 'default')
+    ->execute();
+
+  $count = 0;
+  foreach ($result as $row) {
+    $file = file_load($row->fid);
+    $file->type = file_get_type($file);
+    file_save($file);
+    print dt('@filename has been assigned with @type file type.', array('@filename' => $row->filename, '@type' => $file->type )) . PHP_EOL;
+    $count++;
+  }
+
+  drupal_set_message(dt('@count files has been updated.', array('@count' => $count)));
 }
