@@ -39,7 +39,7 @@
       </li>
     </ul>
   </li>
-  <li>Go to "<?php print l('Text formats', 'admin/config/content/formats'); ?>" page and for all input formats ensure "Convert Media tags to markup" filter comes before "Convert URLs into links" filter under "Filter processing order" as applicable.</li>
+  <li>Go to "<?php print l('Text formats', 'admin/config/content/formats'); ?>" page and for each input format that uses "Convert Media Tags to Markup" ensure that "Convert Media tags to markup" filter is above "Convert URLs into links" filter under "Filter processing order".</li>
   <li>Confirm that you have "Image" file display enabled for each of view modes at "<?php print l('Manage File Display', 'admin/structure/file-types/manage/image/file-display'); ?>" that need Media CKEditor Extras to work. For responsive images, you have to enable "Picture" file display instead of "Image" (assuming Picture module is already installed and configured).</li>
   <li>To create a view mode to display image with caption:
     <ul>
@@ -54,12 +54,17 @@
       <li>Repeat above steps for each file type (image, audio, video, etc) as needed.</li>
     </ul>
   </li>
-  <li>To make a media video field output responsive:
+  <li>To make a media video field output responsive on Content Types not using Panels or Panelizer:
     <ul>
       <li>Ensure "Field Formatter Class" module is installed.</li>
       <li>Open "Manage Display" page for that content type and edit field formatter for that field.</li>
       <li>Specify "mce-video-responsive" CSS class within "Field Formatter Class" textfield.</li>
       <li>Click "Update" and click "Save" button on bottom of page to save configuration changes made.</li>
+    </ul>
+  </li>
+  <li>To make a media video field output responsive on Content Types that use Panels or Panelizer:
+    <ul>
+      <li>Set the “CSS Class” to "mce-video-responsive" for the Panel’s CSS Properties.</li>
     </ul>
   </li>
 </ul>
