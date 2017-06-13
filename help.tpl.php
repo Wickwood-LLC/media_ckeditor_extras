@@ -35,7 +35,6 @@
           <li>Support for Linkit module</li>
           <li>Plugin for embedding files using Media CKEditor</li>
           <li>Media CKEditor Extras</li>
-          <li>Plugin file: widget</li>
         </ul>
       </li>
     </ul>
