@@ -62,6 +62,7 @@
       <li>Open each view mode sub-tab within <?php print l('Manage File Display', 'admin/structure/file-types/manage/image/file-display'); ?> page.</li>
       <li>Select "Restrict in WYSIWYG" checkbox if that view mode to be not shown in Media Browser popup, then save page.</li>
       <li>Repeat above steps for each file type (image, audio, video, etc) as needed.</li>
+      <li>Above steps should be performed against "WYSIWYG" views mode each file type.</li>
     </ul>
   </li>
   <li>To make a media video field output responsive on Content Types not using Panels or Panelizer:
