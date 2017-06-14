@@ -39,7 +39,17 @@
       </li>
     </ul>
   </li>
-  <li>Go to "<?php print l('Text formats', 'admin/config/content/formats'); ?>" page and for each input format that uses "Convert Media Tags to Markup" ensure that "Convert Media tags to markup" filter is above "Convert URLs into links" filter under "Filter processing order".</li>
+  <li>Go to "<?php print l('Text formats', 'admin/config/content/formats'); ?>" page and for each input format uses the Media CKEditor Extras:
+    <ul>
+      <li>Select Roles that will have access to Embedding Media in WYSIWYG Editors</li>
+      <li>Enable "Convert Media Tags to Markup" and ensure that "Convert Media tags to markup" filter is above "Convert URLs into links" filter under "Filter processing order".
+        <ul>
+          <li>Note: Media CKEditor Extras Features module should have provided this configuration for the Text Formats it provides, but if you add others you will want to be sure to configure things as above.</li>
+        </ul>
+      </li>
+      <li>Disable the filter "Ensure That Embedded Media Tags Are Not Contained In Paragraphs”. This should be disabled by default.</li>
+    </ul>
+  </li>
   <li>Confirm that you have "Image" file display enabled for each of view modes at "<?php print l('Manage File Display', 'admin/structure/file-types/manage/image/file-display'); ?>" that need Media CKEditor Extras to work. For responsive images, you have to enable "Picture" file display instead of "Image" (assuming Picture module is already installed and configured).</li>
   <li>To create a view mode to display image with caption:
     <ul>
