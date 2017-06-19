@@ -163,7 +163,7 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
     $items['media-ckeditor-extras-long-text-field-statistics'] = array(
       'description' => "Show number of usage of each text format",
       'arguments' => array(
-        'field_instance'        => "Field instance in the form of <content-type>:<field-name>. For example, page:body",
+        'field_instance'        => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
       ),
     );
 
@@ -283,14 +283,14 @@ function drush_media_ckeditor_extras_long_text_values_reassign_formats() {
 }
 
 function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_arg) {
-  list ($content_type_name, $field_instance_name) = explode(':', $field_instance_arg);
-  if (!empty($content_type_name)) {
-    $content_type = node_type_load($content_type_name);
+  list ($entity_type, $bundle, $field_instance_name) = explode(':', $field_instance_arg);
+  if (!empty($bundle)) {
+    $content_type = node_type_load($bundle);
   }
-  if (!empty($field_instance_name) && !empty($content_type)) {
-    $field_instance = field_info_instance('node', $field_instance_name, $content_type_name);
+  if (!empty($entity_type) && !empty($bundle) && !empty($field_instance_name)) {
+    $field_instance = field_info_instance($entity_type, $field_instance_name, $bundle);
   }
-  if (empty($content_type) || empty($field_instance)) {
+  if (empty($field_instance)) {
     drupal_set_message(dt('Invalid field instance name.'), 'error');
     return;
   }
@@ -302,14 +302,27 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
   $current_table_format_field = _media_ckeditor_extras_long_text_field_current_table_get_format_column($field);
   $revision_table_format_field = _media_ckeditor_extras_long_text_field_revision_table_get_format_column($field);
 
-  print dt("Content type: @content_type, Field: @field", array('@content_type' => $content_type_name, '@field' => $field_instance_name)) . PHP_EOL;
+  print dt("Entity type: @entity_type, Bundle: @bundle, Field: @field", array('@entity_type' => $entity_type, '@bundle' => $bundle, '@field' => $field_instance_name)) . PHP_EOL;
+
+  $entity_info = entity_get_info($entity_type);
+  $id_field_name = $entity_info['entity keys']['id'];
+  $revision_field_name = $entity_info['entity keys']['revision'];
+  $bundle_field_name = $entity_info['entity keys']['bundle'];
+  if (empty($bundle_field_name)) {
+    $bundle_field_name = $entity_type;
+  }
 
   $total_query = db_select($field_current_table, 'f')
     ->condition('f.deleted', 0)
-    ->condition('f.entity_type', 'node');
-  $total_query->join('node', 'n', 'f.entity_id = n.nid AND f.revision_id = n.vid');
+    ->condition('f.entity_type', $entity_type);
+
+  $join_conditions = "f.entity_id = n.{$id_field_name}";
+  if (!empty($revision_field_name)) {
+    $join_conditions .= " AND f.revision_id = n.{$revision_field_name}";
+  }
+  $total_query->join($entity_info['base table'], 'n', $join_conditions);
   $total_query->addExpression('COUNT(f.entity_type)', 'count');
-  $total_query->condition('n.type', $content_type_name)
+  $total_query->condition("n.{$bundle_field_name}", $bundle)
     ->fields('f', array($current_table_format_field))
     ->groupBy('f.' . $current_table_format_field);
   $result = $total_query->execute();
@@ -318,7 +331,6 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
   }
 
   print PHP_EOL;
-  //var_dump($field_current_table, $field_revision_table);
 }
 
 function drush_media_ckeditor_extras_long_text_field_reassign_format($field_instance_arg, $source_format, $target_format) {
