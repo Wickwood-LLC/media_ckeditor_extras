@@ -173,7 +173,7 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
     $items['media-ckeditor-extras-configure-single-long-text-field'] = array(
       'description' => "Configure single long-text field for input format.",
       'arguments' => array(
-        'field_instance' => "Field instance in the form of <content-type>:<field-name>. For example, page:body",
+        'field_instance' => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
         'target_format' => "Target format machine name",
       ),
     );
