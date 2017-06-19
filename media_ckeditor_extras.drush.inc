@@ -157,7 +157,7 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
   $field_instance['settings']['better_formats']['allowed_formats'][$target_format] = $target_format;
   // Save field instance configuration.
   field_update_instance($field_instance);
-  drupal_set_message(t('Updated "%label" field of %bundle content type', array('%label' => $field_instance['label'], '%bundle' => $field_instance['bundle'])));
+  drupal_set_message(t('Updated "!label" field of @bundle @entity_type', array('!label' => $field_instance['label'], '@bundle' => $field_instance['bundle'], '@entity_type' => $field_instance['entity_type'])));
 }
 
  /**
@@ -241,14 +241,11 @@ function drush_media_ckeditor_extras_configure_all_long_text_fields() {
 }
 
 function drush_media_ckeditor_extras_configure_single_long_text_field($field_instance_arg, $target_format) {
-  list ($content_type_name, $field_instance_name) = explode(':', $field_instance_arg);
-  if (!empty($content_type_name)) {
-    $content_type = node_type_load($content_type_name);
+  list ($entity_type, $bundle, $field_instance_name) = explode(':', $field_instance_arg);
+  if (!empty($entity_type) && !empty($bundle) && !empty($field_instance_name)) {
+    $field_instance = field_info_instance($entity_type, $field_instance_name, $bundle);
   }
-  if (!empty($field_instance_name) && !empty($content_type)) {
-    $field_instance = field_info_instance('node', $field_instance_name, $content_type_name);
-  }
-  if (empty($content_type) || empty($field_instance)) {
+  if (empty($field_instance)) {
     drupal_set_message(dt('Invalid field instance name.'), 'error');
     return;
   }
