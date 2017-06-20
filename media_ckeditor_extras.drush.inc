@@ -189,6 +189,10 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
       ),
     );
 
+    $items['media-ckeditor-extras-long-text-field-statistics-bulk'] = array(
+      'description' => "Show number of usage of each text format in each fields provided. Field instances in the form of <entity-type>:<bundle>:<field-name>, one in each line to be provided. Empty lines will be ignored.",
+    );
+
     $items['media-ckeditor-extras-long-text-field-reassign-format'] = array(
       'description' => "Re-assign text format for a specific entity type, bundle long text field values.",
       'arguments' => array(
@@ -358,6 +362,20 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
   }
 
   print PHP_EOL;
+}
+
+function drush_media_ckeditor_extras_long_text_field_statistics_bulk() {
+  $field_instances = preg_split ('/$\R?^/m', stream_get_contents(STDIN));
+  // Remove empety lines.
+  $field_instances = array_filter($field_instances, function($value) {
+    return !empty($value);
+  });
+
+  foreach ($field_instances as $field_instance) {
+    $field_instance = trim($field_instance);
+    print dt('Processing @field_instance ...', array('@field_instance' => $field_instance)) . PHP_EOL;
+    drush_media_ckeditor_extras_long_text_field_statistics($field_instance);
+  }
 }
 
 function drush_media_ckeditor_extras_long_text_field_reassign_format($field_instance_arg, $source_format, $target_format) {
