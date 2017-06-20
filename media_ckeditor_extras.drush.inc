@@ -347,7 +347,10 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
   $result = $total_query->execute();
   if ($result->rowCount()) {
     foreach ($result as $row) {
-      print dt('@count items using @format format', array('@count' => $row->count, '@format' => $row->{$current_table_format_field} )) . PHP_EOL;
+      $format = $row->{$current_table_format_field} === NULL
+        ? 'NULL'
+        : $row->{$current_table_format_field};
+      print dt('@count items using @format format', array('@count' => $row->count, '@format' => $format )) . PHP_EOL;
     }
   }
   else {
