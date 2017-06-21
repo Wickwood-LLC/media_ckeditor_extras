@@ -350,15 +350,26 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
     ->groupBy('f.' . $current_table_format_field);
   $result = $total_query->execute();
   if ($result->rowCount()) {
+    $formats_being_used = array();
     foreach ($result as $row) {
       $format = $row->{$current_table_format_field} === NULL
         ? 'NULL'
         : $row->{$current_table_format_field};
-      print dt('@count items using @format format', array('@count' => $row->count, '@format' => $format )) . PHP_EOL;
+      $formats_being_used[$row->{$current_table_format_field}] = $format;
+      print dt("\t@count items using @format format", array('@count' => $row->count, '@format' => $format )) . PHP_EOL;
+    }
+    if (isset($field_instance['settings']['better_formats']['allowed_formats'])) {
+      $formats_allowed = array_filter($field_instance['settings']['better_formats']['allowed_formats'], function($value){
+        return !empty($value);
+      });
+      $non_configured_formats = array_diff_key($formats_being_used, $formats_allowed);
+      if (count($non_configured_formats)) {
+        print dt("\tThese formats are not configured but in use: @formats", array('@formats' => implode(', ', $non_configured_formats))) . PHP_EOL;
+      }
     }
   }
   else {
-    print dt('No items found') . PHP_EOL;
+    print dt("\tNo items found") . PHP_EOL;
   }
 
   print PHP_EOL;
