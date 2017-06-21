@@ -202,6 +202,13 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
       ),
     );
 
+    $items['media-ckeditor-extras-long-text-field-identify'] = array(
+      'description' => "Show field items using specified particular format",
+      'arguments' => array(
+        'field_instance_with_format' => "Field instance in the form of <entity-type>:<bundle>:<field-name>:<format>. For example, node:page:body:full_html",
+      ),
+    );
+
     $items['media-ckeditor-extras-detect-file-types'] = array(
       'description' => "Detect and assign file types to files that are still having 'default' as file type.",
       'options' => array(
@@ -459,5 +466,68 @@ function drush_media_ckeditor_extras_detect_file_types() {
 
   if ($total_count > $count) {
     drupal_set_message(dt('@count files did not require re-assignment.', array('@count' => $total_count - $count)));
+  }
+}
+
+function drush_media_ckeditor_extras_long_text_field_identify($field_instance_with_format_arg) {
+  list ($entity_type, $bundle, $field_instance_name, $format_name) = explode(':', $field_instance_with_format_arg);
+  if (!empty($entity_type) && !empty($bundle) && !empty($field_instance_name)) {
+    $field_instance = field_info_instance($entity_type, $field_instance_name, $bundle);
+  }
+  if (empty($field_instance)) {
+    drupal_set_message(dt('Invalid field instance name.'), 'error');
+    return;
+  }
+
+  $field = field_info_field($field_instance['field_name']);
+
+  // Get main and revision table names for the field.
+  $field_current_table =  _media_ckeditor_extras_get_field_current_table($field);
+  $field_revision_table = _media_ckeditor_extras_get_field_revision_table($field);
+
+  // Get format fields in db table.
+  $current_table_format_field = _media_ckeditor_extras_long_text_field_current_table_get_format_column($field);
+  $revision_table_format_field = _media_ckeditor_extras_long_text_field_revision_table_get_format_column($field);
+
+  $entity_info = entity_get_info($entity_type);
+  $id_field_name = $entity_info['entity keys']['id'];
+  $revision_field_name = $entity_info['entity keys']['revision'];
+  $bundle_field_name = $entity_info['entity keys']['bundle'];
+
+  // Prepare and execute query to get all field items using particular text format.
+  $query = db_select($field_current_table, 'f')
+    ->condition('f.deleted', 0)
+    ->condition('f.entity_type', $entity_type);
+  $join_conditions = "f.entity_id = n.{$id_field_name}";
+  if (!empty($revision_field_name)) {
+    $join_conditions .= " AND f.revision_id = n.{$revision_field_name}";
+  }
+  $query->join($entity_info['base table'], 'n', $join_conditions);
+  if (!empty($bundle_field_name) && !empty($bundle)) {
+    $query->condition("n.{$bundle_field_name}", $bundle);
+  }
+
+  $query->condition("f.{$current_table_format_field}", array($format_name), 'IN');
+
+  $query->addField('f', 'entity_id');
+  if (!empty($revision_field_name)) {
+    $query->addField('f', 'revision_id');
+  }
+
+  $result = $query->execute();
+
+  foreach ($result as $row) {
+    if (!empty($revision_field_name)) {
+      print dt("Entity id: @id, revision id: @rid", array('@id' => $row->entity_id, '@rid' => $row->revision_id ));
+    }
+    else {
+      print dt("Entity id: @id", array('@id' => $row->entity_id ));
+    }
+    $entities = entity_load($entity_type, array($row->entity_id));
+    if (count($entities)) {
+      $uri = entity_uri($entity_type, reset($entities));
+      print dt(', URL: "@url"', array('@url' => $uri['path']));
+    }
+    print PHP_EOL;
   }
 }
