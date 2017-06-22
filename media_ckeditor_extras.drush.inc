@@ -15,17 +15,23 @@ function _media_ckeditor_extras_get_long_text_fields() {
   return $fields;
 }
 
-function _media_ckeditor_extras_get_long_text_field_instances() {
+/**
+ * Return array of all field instances of specified types.
+ */
+function _media_ckeditor_extras_get_field_instances_by_type($field_types) {
   $field_instances = array();
-  $node_field_instances = field_info_instances('node');
-  foreach ($node_field_instances as $bundle => $content_type_field_instances) {
-    foreach ($content_type_field_instances as $field_name => $content_type_field_instance) {
-      $field = field_info_field_by_id($content_type_field_instance['field_id']);
-      // Only process long-text fields.
-      if (in_array($field['type'], array('text_long', 'text_with_summary'))) {
-        $field_instances[] = $content_type_field_instance;
-      }
-    }
+
+  $query = db_select('field_config_instance', 'fci')
+    ->fields('fci', array('id', 'entity_type', 'bundle', 'field_name'))
+    ->condition('fci.deleted', 0);
+  $query->join('field_config', 'fc', 'fci.field_id = fc.id');
+  $query->condition('fc.type', $field_types, 'IN')
+    ->orderBy('fci.entity_type', 'ASC')
+    ->orderBy('fci.bundle', 'ASC')
+    ->orderBy('fci.field_name', 'ASC');
+  $result = $query->execute();
+  foreach ($result as $row) {
+    $field_instances[] = field_info_instance($row->entity_type, $row->field_name, $row->bundle);
   }
   return $field_instances;
 }
@@ -166,6 +172,10 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
  function media_ckeditor_extras_drush_command() {
    $items = array();
 
+    $items['media-ckeditor-extras-list-all-long-text-field-instances'] = array(
+     'description' => "List all long-text field instances in the site. It outputs each field instance in the form <entity-type>:<bundle>:<field-name>, one in each line.",
+    );
+
     $items['media-ckeditor-extras-configure-all-long-text-fields'] = array(
       'description' => "Configure all long-text fields for input format.",
     );
@@ -220,6 +230,13 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
    return $items;
  }
 
+function drush_media_ckeditor_extras_list_all_long_text_field_instances() {
+  $long_text_field_instances = _media_ckeditor_extras_get_field_instances_by_type(array('text_long', 'text_with_summary'));
+  foreach ($long_text_field_instances as $field_instance) {
+    print dt("@entity_type:@bundle:@field_name", array('@entity_type' => $field_instance['entity_type'], '@bundle' => $field_instance['bundle'], '@field_name' => $field_instance['field_name'])) . PHP_EOL;
+  }
+}
+
 /**
  * Drush command to configure all long-text field instances for its text format.
  */
@@ -245,7 +262,7 @@ function drush_media_ckeditor_extras_configure_all_long_text_fields() {
   }
   $target_format = $filter_formats_by_name[$target_format_name]->format;
 
-  $long_text_field_instances = _media_ckeditor_extras_get_long_text_field_instances();
+  $long_text_field_instances = _media_ckeditor_extras_get_field_instances_by_type(array('text_long', 'text_with_summary'));
   foreach ($long_text_field_instances as $field_instance) {
     _media_ckeditor_extras_configure_long_text_field_to_limit_format($field_instance, $target_format);
   }
