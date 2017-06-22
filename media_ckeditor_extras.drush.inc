@@ -389,17 +389,23 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
     print dt("\tNo items found.") . PHP_EOL;
   }
 
+  $text_processing_enabled = isset($field_instance['settings']['text_processing']) &&
+      $field_instance['settings']['text_processing'];
+
   $formats_allowed = array();
-  if (isset($field_instance['settings']['text_processing']) &&
-      $field_instance['settings']['text_processing'] &&
-      isset($field_instance['settings']['better_formats']['allowed_formats'])
-  ) {
+  if ($text_processing_enabled && isset($field_instance['settings']['better_formats']['allowed_formats'])) {
     $formats_allowed = array_filter($field_instance['settings']['better_formats']['allowed_formats'], function($value){
       return !empty($value);
     });
   }
+
   if (count($formats_allowed)) {
     print dt("\tFormats allowed in this field are: @formats", array('@formats' => implode(', ', $formats_allowed))) . PHP_EOL;
+  }
+  elseif (!$text_processing_enabled) {
+    print dt("\tFiltered Text is disabled.") . PHP_EOL;
+    // Help to shwo better message regarding formats in use but not configured.
+    $formats_allowed[NULL] = 'NULL';
   }
   else {
     print dt("\tNo formats are configured for this field.") . PHP_EOL;
@@ -409,7 +415,6 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
   if (count($non_configured_formats)) {
     print dt("\tThese formats are not configured but in use: @formats", array('@formats' => implode(', ', $non_configured_formats))) . PHP_EOL;
   }
-
 
   print PHP_EOL;
 }
