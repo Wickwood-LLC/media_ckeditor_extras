@@ -507,7 +507,7 @@ function drush_media_ckeditor_extras_long_text_field_identify($field_instance_wi
     $query->condition("n.{$bundle_field_name}", $bundle);
   }
 
-  $query->condition("f.{$current_table_format_field}", array($format_name), 'IN');
+  $query->condition("f.{$current_table_format_field}", $format_name);
 
   $query->addField('f', 'entity_id');
   if (!empty($revision_field_name)) {
