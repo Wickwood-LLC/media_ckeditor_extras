@@ -26,6 +26,7 @@ function _media_ckeditor_extras_get_field_instances_by_type($field_types) {
     ->condition('fci.deleted', 0);
   $query->join('field_config', 'fc', 'fci.field_id = fc.id');
   $query->condition('fc.type', $field_types, 'IN')
+    ->condition('fc.deleted', 0)
     ->orderBy('fci.entity_type', 'ASC')
     ->orderBy('fci.bundle', 'ASC')
     ->orderBy('fci.field_name', 'ASC');
