@@ -372,7 +372,10 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
   }
 
   $formats_allowed = array();
-  if (isset($field_instance['settings']['better_formats']['allowed_formats'])) {
+  if (isset($field_instance['settings']['text_processing']) &&
+      $field_instance['settings']['text_processing'] &&
+      isset($field_instance['settings']['better_formats']['allowed_formats'])
+  ) {
     $formats_allowed = array_filter($field_instance['settings']['better_formats']['allowed_formats'], function($value){
       return !empty($value);
     });
