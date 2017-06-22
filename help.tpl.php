@@ -79,3 +79,76 @@
     </ul>
   </li>
 </ul>
+
+<h3>Drush Commands</h3>
+<dl>
+  <dt>media-ckeditor-extras-list-all-long-text-field-instances</dt>
+  <dd>It will output all long text fields in site in &lt;entity-type&gt;:&lt;bundle&gt:&lt;field-name&gt format, one in each line. </dd>
+  <dt>media-ckeditor-extras-configure-all-long-text-fields</dt>
+  <dd>
+    Configures all long text fields to limit to single text format. Also performs site wide reassignment from one text format to another. Not useful on most of sites.<br>
+    <p>This command will ask you to select text formats to be reassigned.</p>
+    <p>Proper analysis should be performed before running this command to check compatibility issues between source and target text formats. Or issues may occur in field output.</p>
+  </dd>
+  <dt>media-ckeditor-extras-configure-single-long-text-field</dt>
+  <dd>
+    Arguments:
+    <ul>
+      <li>field_instance: Field instance in the form of &lt;entity-type&gt;:&lt;bundle&gt:&lt;field-name&gt. For example, node:page:body</li>
+      <li>target_format: Target format machine name</li>
+    </ul>
+    <p>Configure specified field instance to restrict to single text format. It will also reassign all field items to user specified text format.</p>
+    <p>Proper analysis should be performed before running this command to check compatibility issues between source and target text formats. Or issues may occur in field output.</p>
+  </dd>
+  <dt>media-ckeditor-extras-long-text-values-reassign-formats</dt>
+  <dd>
+    Similar to "media-ckeditor-extras-configure-all-long-text-fields", but only on fields of content types (node types).
+  </dd>
+  <dt>media-ckeditor-extras-long-text-field-statistics</dt>
+  <dd>
+    Arguments:
+    <ul>
+      <li>field_instance: Field instance in the form of &lt;entity-type&gt;:&lt;bundle&gt:&lt;field-name&gt. For example, node:page:body</li>
+    </ul>
+    <p>Gives information about how much field items are using each text formats.</p>
+    <p>Informs if 'Limit Allowed Text Formats' is not enabled.</p>
+    <p>Informs about text formats configured as per 'Limit Allowed Text Formats'</p>
+    <p>Informs if 'Filtered Text' is disabled.</p>
+    <p>Informs about any text format in use but not allowed as per field configuration.</p>
+  </dd>
+  <dt>media-ckeditor-extras-long-text-field-statistics-bulk</dt>
+  <dd>
+    Same as "media-ckeditor-extras-long-text-field-statistics" but performs on multiple field instances.
+    <p>Please note: field names to be given using pipe ("|"). You can feed this command with output from "media-ckeditor-extras-list-all-long-text-field-instances" command as shown:</p>
+    <pre><code>drush media-ckeditor-extras-list-all-long-text-field-instances | drush media-ckeditor-extras-long-text-field-statistics-bulk</code></pre>
+  </dd>
+  <dt>media-ckeditor-extras-long-text-field-reassign-format</dt>
+  <dd>
+    Arguments:
+    <ul>
+      <li>field_instance: Field instance in the form of &lt;entity-type&gt;:&lt;bundle&gt:&lt;field-name&gt. For example, node:page:body</li>
+      <li>source_format: Source format machine name</li>
+      <li>target_format: Target format machine name</li>
+    </ul>
+    <p>Re-assigns all field items currently using source_format to use target_format.</p>
+    <p>Proper analysis should be performed before running this command to check compatibility issues between source and target text formats. Or issues may occur in field output.</p>
+  </dd>
+  <dt>media-ckeditor-extras-long-text-field-identify</dt>
+  <dd>
+    Arguments:
+    <ul>
+      <li>field_instance_with_format: Field instance with format in the form of &lt;entity-type&gt;:&lt;bundle&gt:&lt;field-name&gt:&lt;format&gt;. For example, node:page:body:full_html</li>
+    </ul>
+    <p>Lists all field items currently using specified text format.</p>
+    <p>Please note that you can omit 'format' part in argument if you want to see items using no formats (NULL).</p>
+  </dd>
+  <dt>media-ckeditor-extras-detect-file-types</dt>
+  <dd>
+    Arguments:
+    <ul>
+      <li>type: The type of files to be inspected. By default it will be "default".</li>
+      <li>non-strict: Do not check file type to be valid one. Useful if file type was disabled or deleted.</li>
+    </ul>
+    Detect and assign file types to files that are still having 'default' as file type.
+  </dd>
+</dl>
