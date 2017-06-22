@@ -224,7 +224,7 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
       'description' => "Detect and assign file types to files that are still having 'default' as file type.",
       'options' => array(
         'type' => 'The type of files to be inspected. By default it will be "default".',
-        'non-strict' => 'Do not check passed file type as valid one.',
+        'non-strict' => 'Do not check file type to be valid one. Useful if file type was disabled or deleted.',
       ),
     );
 
