@@ -119,8 +119,8 @@
   <dt>media-ckeditor-extras-long-text-field-statistics-bulk</dt>
   <dd>
     Same as "media-ckeditor-extras-long-text-field-statistics" but performs on multiple field instances.
-    <p>Please note: field names to be given using pipe ("|"). You can feed this command with output from "media-ckeditor-extras-list-all-long-text-field-instances" command as shown:</p>
-    <pre><code>drush media-ckeditor-extras-list-all-long-text-field-instances | drush media-ckeditor-extras-long-text-field-statistics-bulk</code></pre>
+    <p>Please note: field names to be given using pipe ("|"). You can feed this command with output from "media-ckeditor-extras-list-all-long-text-field-instances" command as shown in example below:</p>
+    <pre><code>drush media-ckeditor-extras-list-all-long-text-field-instances | drush media-ckeditor-extras-long-text-field-statistics-bulk > ~site-archive-junaid/long-text-fields-list-results.txt</code></pre>
   </dd>
   <dt>media-ckeditor-extras-long-text-field-reassign-format</dt>
   <dd>
