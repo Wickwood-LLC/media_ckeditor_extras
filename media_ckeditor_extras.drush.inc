@@ -365,7 +365,8 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
 
   $total_query = db_select($field_current_table, 'f')
     ->condition('f.deleted', 0)
-    ->condition('f.entity_type', $entity_type);
+    ->condition('f.entity_type', $entity_type)
+    ->condition('f.bundle', $bundle);
 
   $join_conditions = "f.entity_id = n.{$id_field_name}";
   if (!empty($revision_field_name)) {
