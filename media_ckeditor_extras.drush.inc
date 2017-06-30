@@ -357,6 +357,12 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
   $revision_field_name = $entity_info['entity keys']['revision'];
   $bundle_field_name = $entity_info['entity keys']['bundle'];
 
+  if ($entity_type == 'comment') {
+    // Comment entity type is having 'node_type' as bundle field.
+    // But 'comment' table does not have that field!!
+    unset($bundle_field_name);
+  }
+
   $total_query = db_select($field_current_table, 'f')
     ->condition('f.deleted', 0)
     ->condition('f.entity_type', $entity_type);
