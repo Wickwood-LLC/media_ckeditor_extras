@@ -21,11 +21,7 @@ function media_ckeditor_extras_features_field_default_field_instances() {
       'default' => array(
         'label' => 'above',
         'module' => 'link',
-        'settings' => array(
-          'quickedit' => array(
-            'editor' => 'form',
-          ),
-        ),
+        'settings' => array(),
         'type' => 'link_default',
         'weight' => 11,
       ),
@@ -167,6 +163,24 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'scale_240x135' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_240x180' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_320x180' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'scale_320x240' => array(
         'label' => 'above',
         'settings' => array(),
@@ -185,6 +199,18 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'scale_360x270' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_480x270' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'scale_480x360' => array(
         'label' => 'above',
         'settings' => array(),
@@ -198,6 +224,18 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'weight' => 0,
       ),
       'scale_480x360_rotate_right' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_560x315' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_640x360' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -248,8 +286,6 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'target' => 'user',
         'title' => '',
       ),
-      'custom_add_another' => '',
-      'custom_remove' => '',
       'display' => array(
         'url_cutoff' => 80,
       ),
@@ -287,23 +323,14 @@ function media_ckeditor_extras_features_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
-        'settings' => array(
-          'quickedit' => array(
-            'editor' => 'plain_text',
-          ),
-        ),
-        'type' => 'text_default',
-        'weight' => 12,
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
       ),
       'inline_image_with_caption' => array(
         'label' => 'hidden',
         'module' => 'text',
-        'settings' => array(
-          'quickedit' => array(
-            'editor' => 'plain_text',
-          ),
-        ),
+        'settings' => array(),
         'type' => 'text_default',
         'weight' => 1,
       ),
@@ -418,11 +445,7 @@ function media_ckeditor_extras_features_field_default_field_instances() {
       'preview_100x100_with_caption' => array(
         'label' => 'hidden',
         'module' => 'text',
-        'settings' => array(
-          'quickedit' => array(
-            'editor' => 'plain_text',
-          ),
-        ),
+        'settings' => array(),
         'type' => 'text_default',
         'weight' => 1,
       ),
@@ -439,6 +462,24 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'weight' => 0,
       ),
       'scale_160x120_rotate_right' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_240x135' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_240x180' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_320x180' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -462,6 +503,18 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'scale_360x270' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_480x270' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'scale_480x360' => array(
         'label' => 'above',
         'settings' => array(),
@@ -475,6 +528,18 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'weight' => 0,
       ),
       'scale_480x360_rotate_right' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_560x315' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_640x360' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -550,8 +615,6 @@ function media_ckeditor_extras_features_field_default_field_instances() {
           ),
         ),
       ),
-      'custom_add_another' => '',
-      'custom_remove' => '',
       'linkit' => array(
         'button_text' => 'Search',
         'enable' => 0,
@@ -568,15 +631,13 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'rows' => 5,
       ),
       'type' => 'text_textarea',
-      'weight' => 9,
+      'weight' => 5,
     ),
   );
 
   // Exported field_instance: 'file-image-field_media_placement'.
   $field_instances['file-image-field_media_placement'] = array(
     'bundle' => 'image',
-    'custom_add_another' => '',
-    'custom_remove' => '',
     'default_value' => NULL,
     'default_value_label_token' => 0,
     'deleted' => 0,
@@ -584,20 +645,15 @@ function media_ckeditor_extras_features_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'list',
-        'settings' => array(
-          'quickedit' => array(
-            'editor' => 'form',
-          ),
-        ),
-        'type' => 'list_default',
-        'weight' => 14,
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 4,
       ),
       'inline_image_with_caption' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 4,
       ),
       'link' => array(
         'label' => 'above',
@@ -671,6 +727,24 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'scale_240x135' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_240x180' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_320x180' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'scale_320x240' => array(
         'label' => 'above',
         'settings' => array(),
@@ -689,6 +763,18 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'scale_360x270' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_480x270' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'scale_480x360' => array(
         'label' => 'above',
         'settings' => array(),
@@ -702,6 +788,18 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'weight' => 0,
       ),
       'scale_480x360_rotate_right' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_560x315' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_640x360' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -745,8 +843,6 @@ function media_ckeditor_extras_features_field_default_field_instances() {
     'readmore_behaviour' => 'default',
     'required' => 0,
     'settings' => array(
-      'custom_add_another' => '',
-      'custom_remove' => '',
       'user_register_form' => FALSE,
       'wysiwyg_override' => 1,
     ),
@@ -757,15 +853,13 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'content_taxonomy_opt_groups' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 10,
+      'weight' => 6,
     ),
   );
 
   // Exported field_instance: 'file-video-field_media_placement'.
   $field_instances['file-video-field_media_placement'] = array(
     'bundle' => 'video',
-    'custom_add_another' => '',
-    'custom_remove' => '',
     'default_value' => NULL,
     'default_value_label_token' => 0,
     'deleted' => 0,
@@ -773,14 +867,9 @@ function media_ckeditor_extras_features_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'list',
-        'settings' => array(
-          'quickedit' => array(
-            'editor' => 'form',
-          ),
-        ),
-        'type' => 'list_default',
-        'weight' => 4,
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 1,
       ),
       'link' => array(
         'label' => 'above',
@@ -789,6 +878,72 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'weight' => 0,
       ),
       'preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_240x135' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_240x180' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_320x180' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_320x240' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_360x270' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_480x270' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_480x360' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_560x315' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_640x360' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'scale_640x480' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'search_index' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -814,8 +969,6 @@ function media_ckeditor_extras_features_field_default_field_instances() {
     'readmore_behaviour' => 'default',
     'required' => 0,
     'settings' => array(
-      'custom_add_another' => '',
-      'custom_remove' => '',
       'user_register_form' => FALSE,
       'wysiwyg_override' => 1,
     ),
@@ -826,7 +979,7 @@ function media_ckeditor_extras_features_field_default_field_instances() {
         'content_taxonomy_opt_groups' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 41,
+      'weight' => 3,
     ),
   );
 

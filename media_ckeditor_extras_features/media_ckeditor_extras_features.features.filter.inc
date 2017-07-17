@@ -19,24 +19,24 @@ function media_ckeditor_extras_features_filter_default_formats() {
     'weight' => -9,
     'filters' => array(
       'media_filter' => array(
-        'weight' => -48,
+        'weight' => -50,
         'status' => 1,
         'settings' => array(),
       ),
       'filter_url' => array(
-        'weight' => -47,
+        'weight' => -49,
         'status' => 1,
         'settings' => array(
           'filter_url_length' => 72,
         ),
       ),
       'picture' => array(
-        'weight' => -46,
+        'weight' => -48,
         'status' => 1,
         'settings' => array(),
       ),
       'image_resize_filter' => array(
-        'weight' => -45,
+        'weight' => -47,
         'status' => 1,
         'settings' => array(
           'link' => 0,
@@ -49,17 +49,17 @@ function media_ckeditor_extras_features_filter_default_formats() {
         ),
       ),
       'filter_autop' => array(
-        'weight' => -38,
+        'weight' => -46,
         'status' => 1,
         'settings' => array(),
       ),
       'filter_htmlcorrector' => array(
-        'weight' => -37,
+        'weight' => -44,
         'status' => 1,
         'settings' => array(),
       ),
       'pathologic' => array(
-        'weight' => -36,
+        'weight' => -43,
         'status' => 1,
         'settings' => array(
           'settings_source' => 'local',
@@ -83,24 +83,24 @@ function media_ckeditor_extras_features_filter_default_formats() {
     'weight' => -8,
     'filters' => array(
       'media_filter' => array(
-        'weight' => -48,
+        'weight' => -50,
         'status' => 1,
         'settings' => array(),
       ),
       'filter_url' => array(
-        'weight' => -44,
+        'weight' => -49,
         'status' => 1,
         'settings' => array(
           'filter_url_length' => 72,
         ),
       ),
       'picture' => array(
-        'weight' => -43,
+        'weight' => -48,
         'status' => 1,
         'settings' => array(),
       ),
       'image_resize_filter' => array(
-        'weight' => -42,
+        'weight' => -47,
         'status' => 1,
         'settings' => array(
           'link' => 0,
@@ -113,17 +113,17 @@ function media_ckeditor_extras_features_filter_default_formats() {
         ),
       ),
       'filter_autop' => array(
-        'weight' => -38,
+        'weight' => -46,
         'status' => 1,
         'settings' => array(),
       ),
       'filter_htmlcorrector' => array(
-        'weight' => -37,
+        'weight' => -44,
         'status' => 1,
         'settings' => array(),
       ),
       'pathologic' => array(
-        'weight' => -36,
+        'weight' => -43,
         'status' => 1,
         'settings' => array(
           'settings_source' => 'local',
@@ -133,6 +133,15 @@ function media_ckeditor_extras_features_filter_default_formats() {
             'protocol_style' => 'full',
             'local_paths' => '',
           ),
+        ),
+      ),
+      'filter_html' => array(
+        'weight' => -42,
+        'status' => 1,
+        'settings' => array(
+          'allowed_html' => '<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <h2> <h3> <h4> <h5> <h6> <p> <br> <span> <img>',
+          'filter_html_help' => 1,
+          'filter_html_nofollow' => 0,
         ),
       ),
     ),
@@ -186,34 +195,34 @@ function media_ckeditor_extras_features_filter_default_formats() {
     'weight' => -10,
     'filters' => array(
       'media_filter' => array(
-        'weight' => -48,
+        'weight' => -50,
         'status' => 1,
         'settings' => array(),
       ),
       'icon' => array(
-        'weight' => -47,
+        'weight' => -49,
         'status' => 1,
         'settings' => array(),
       ),
       'wysiwyg_template_cleanup' => array(
-        'weight' => -46,
+        'weight' => -48,
         'status' => 1,
         'settings' => array(),
       ),
       'filter_url' => array(
-        'weight' => -43,
+        'weight' => -47,
         'status' => 1,
         'settings' => array(
           'filter_url_length' => 72,
         ),
       ),
       'picture' => array(
-        'weight' => -42,
+        'weight' => -46,
         'status' => 1,
         'settings' => array(),
       ),
       'image_resize_filter' => array(
-        'weight' => -41,
+        'weight' => -45,
         'status' => 1,
         'settings' => array(
           'link' => 0,
@@ -226,17 +235,17 @@ function media_ckeditor_extras_features_filter_default_formats() {
         ),
       ),
       'filter_autop' => array(
-        'weight' => -38,
+        'weight' => -44,
         'status' => 1,
         'settings' => array(),
       ),
       'filter_htmlcorrector' => array(
-        'weight' => -37,
+        'weight' => -42,
         'status' => 1,
         'settings' => array(),
       ),
       'pathologic' => array(
-        'weight' => -36,
+        'weight' => -41,
         'status' => 1,
         'settings' => array(
           'settings_source' => 'local',

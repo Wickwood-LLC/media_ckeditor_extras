@@ -21,7 +21,7 @@ function media_ckeditor_extras_features_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Image Link',
-    'weight' => '12',
+    'weight' => '7',
     'children' => array(
       0 => 'field_image_link',
     ),
