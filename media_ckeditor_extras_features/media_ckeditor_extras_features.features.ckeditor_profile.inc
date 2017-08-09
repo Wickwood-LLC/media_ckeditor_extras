@@ -20,9 +20,8 @@ function media_ckeditor_extras_features_ckeditor_profile_defaults() {
     [\'Table\',\'HorizontalRule\',\'Smiley\',\'SpecialChar\'],
     [\'ShowBlocks\',\'DrupalBreak\'],
     \'/\',
-    
     [\'Bold\',\'Italic\',\'Underline\',\'Strike\',\'-\',\'Subscript\',\'Superscript\',\'-\',\'Format\',\'RemoveFormat\'],
-    [\'NumberedList\',\'BulletedList\',\'-\',\'Outdent\',\'Indent\',\'Blockquote\'],
+    [\'NumberedList\',\'BulletedList\',\'-\',\'DescriptionList\',\'DescriptionTerm\',\'descriptionValue\',\'-\',\'Outdent\',\'Indent\',\'Blockquote\'],
     [\'JustifyLeft\',\'JustifyCenter\',\'JustifyRight\',\'JustifyBlock\'],
     [\'Media\',\'linkit\',\'Unlink\']
 ]',
@@ -71,6 +70,26 @@ function media_ckeditor_extras_features_ckeditor_profile_defaults() {
             'desc' => 'Plugin to count symbols, symbols without blanks and words',
             'path' => '%plugin_dir%counter/',
             'buttons' => FALSE,
+            'default' => 'f',
+          ),
+          'descriptionlist' => array(
+            'name' => 'descriptionlist',
+            'desc' => 'Plugin file: descriptionlist',
+            'path' => '%plugin_dir_extra%descriptionlist/',
+            'buttons' => array(
+              'DescriptionList' => array(
+                'label' => 'DescriptionList',
+                'icon' => 'icons/descriptionlist.png',
+              ),
+              'DescriptionTerm' => array(
+                'label' => 'DescriptionTerm',
+                'icon' => 'icons/descriptionterm.png',
+              ),
+              'descriptionValue' => array(
+                'label' => 'descriptionValue',
+                'icon' => 'icons/descriptionvalue.png',
+              ),
+            ),
             'default' => 'f',
           ),
           'drupalbreaks' => array(
@@ -145,7 +164,7 @@ function media_ckeditor_extras_features_ckeditor_profile_defaults() {
         'ss' => 2,
         'toolbar' => '[
     [\'Source\'],
-    [\'Bold\',\'Italic\',\'Underline\',\'-\',\'PasteText\',\'SpellChecker\',\'Scayt\',\'-\',\'TextColor\',\'Format\',\'RemoveFormat\',\'-\',\'JustifyLeft\',\'JustifyCenter\',\'JustifyRight\',\'JustifyBlock\',\'NumberedList\',\'BulletedList\'],
+    [\'Bold\',\'Italic\',\'Underline\',\'-\',\'PasteText\',\'SpellChecker\',\'Scayt\',\'-\',\'TextColor\',\'Format\',\'RemoveFormat\',\'-\',\'JustifyLeft\',\'JustifyCenter\',\'JustifyRight\',\'JustifyBlock\',\'NumberedList\',\'BulletedList\',\'-\',\'DescriptionList\',\'DescriptionTerm\',\'descriptionValue\'],
     [\'Media\',\'linkit\',\'Unlink\',\'DrupalBreak\']
 ]',
         'expand' => 't',
@@ -193,6 +212,26 @@ function media_ckeditor_extras_features_ckeditor_profile_defaults() {
             'desc' => 'Plugin to count symbols, symbols without blanks and words',
             'path' => '%plugin_dir%counter/',
             'buttons' => FALSE,
+            'default' => 'f',
+          ),
+          'descriptionlist' => array(
+            'name' => 'descriptionlist',
+            'desc' => 'Plugin file: descriptionlist',
+            'path' => '%plugin_dir_extra%descriptionlist/',
+            'buttons' => array(
+              'DescriptionList' => array(
+                'label' => 'DescriptionList',
+                'icon' => 'icons/descriptionlist.png',
+              ),
+              'DescriptionTerm' => array(
+                'label' => 'DescriptionTerm',
+                'icon' => 'icons/descriptionterm.png',
+              ),
+              'descriptionValue' => array(
+                'label' => 'descriptionValue',
+                'icon' => 'icons/descriptionvalue.png',
+              ),
+            ),
             'default' => 'f',
           ),
           'drupalbreaks' => array(
@@ -348,7 +387,7 @@ function media_ckeditor_extras_features_ckeditor_profile_defaults() {
     [\'Templates\',\'CreateDiv\',\'ShowBlocks\',\'PageBreak\',\'DrupalBreak\'],
     \'/\',
     [\'Bold\',\'Italic\',\'Underline\',\'Strike\',\'-\',\'Subscript\',\'Superscript\',\'-\',\'TextColor\',\'Format\',\'FontSize\',\'RemoveFormat\'],
-    [\'NumberedList\',\'BulletedList\',\'-\',\'Outdent\',\'Indent\',\'Blockquote\'],
+    [\'NumberedList\',\'BulletedList\',\'-\',\'DescriptionList\',\'DescriptionTerm\',\'descriptionValue\',\'-\',\'Outdent\',\'Indent\',\'Blockquote\'],
     [\'JustifyLeft\',\'JustifyCenter\',\'JustifyRight\',\'JustifyBlock\'],
     [\'Media\',\'linkit\',\'Unlink\',\'Anchor\']
 ]',
@@ -397,6 +436,26 @@ function media_ckeditor_extras_features_ckeditor_profile_defaults() {
             'desc' => 'Plugin to count symbols, symbols without blanks and words',
             'path' => '%plugin_dir%counter/',
             'buttons' => FALSE,
+            'default' => 'f',
+          ),
+          'descriptionlist' => array(
+            'name' => 'descriptionlist',
+            'desc' => 'Plugin file: descriptionlist',
+            'path' => '%plugin_dir_extra%descriptionlist/',
+            'buttons' => array(
+              'DescriptionList' => array(
+                'label' => 'DescriptionList',
+                'icon' => 'icons/descriptionlist.png',
+              ),
+              'DescriptionTerm' => array(
+                'label' => 'DescriptionTerm',
+                'icon' => 'icons/descriptionterm.png',
+              ),
+              'descriptionValue' => array(
+                'label' => 'descriptionValue',
+                'icon' => 'icons/descriptionvalue.png',
+              ),
+            ),
             'default' => 'f',
           ),
           'drupalbreaks' => array(
