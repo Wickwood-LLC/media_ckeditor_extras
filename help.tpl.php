@@ -140,7 +140,7 @@
     Arguments:
     <ul>
       <li>field_instance: Field instance in the form of &lt;entity-type&gt;:&lt;bundle&gt:&lt;field-name&gt. For example, node:page:body</li>
-      <li>target_format: Target format machine name</li>
+      <li>target_format: Target format machine name. Provide "&lt;NULL&gt;" (including quotes) to disable text filtering.</li>
     </ul>
     <p>Configure specified field instance to restrict to single text format. It will also reassign all field items to user specified text format.</p>
     <p>Proper analysis should be performed before running this command to check compatibility issues between source and target text formats. Or issues may occur in field output.</p>

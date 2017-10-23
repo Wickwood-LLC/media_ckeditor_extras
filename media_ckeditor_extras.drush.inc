@@ -151,17 +151,23 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
 function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field_instance, $target_format) {
   $filter_formats = filter_formats();
 
-  // Enable text processing.
-  $field_instance['settings']['text_processing'] = 1;
-  // Check "Limit allowed text formats"
-  $field_instance['settings']['better_formats']['allowed_formats_toggle'] = 1;
-  // Uncheck all text formats.
-  $field_instance['settings']['better_formats']['allowed_formats'] = array();
-  foreach ($filter_formats as $format_name => $format) {
-    $field_instance['settings']['better_formats']['allowed_formats'][$format_name] = 0;
+  if (isset($target_format)) {
+    // Enable text processing.
+    $field_instance['settings']['text_processing'] = 1;
+    // Check "Limit allowed text formats"
+    $field_instance['settings']['better_formats']['allowed_formats_toggle'] = 1;
+    // Uncheck all text formats.
+    $field_instance['settings']['better_formats']['allowed_formats'] = array();
+    foreach ($filter_formats as $format_name => $format) {
+      $field_instance['settings']['better_formats']['allowed_formats'][$format_name] = 0;
+    }
+    // Now check selected format only.
+    $field_instance['settings']['better_formats']['allowed_formats'][$target_format] = $target_format;
   }
-  // Now check selected format only.
-  $field_instance['settings']['better_formats']['allowed_formats'][$target_format] = $target_format;
+  else {
+    // Disable text processing.
+    $field_instance['settings']['text_processing'] = 0;
+  }
   // Save field instance configuration.
   field_update_instance($field_instance);
   drupal_set_message(t('Updated "!label" field of @bundle @entity_type', array('!label' => $field_instance['label'], '@bundle' => $field_instance['bundle'], '@entity_type' => $field_instance['entity_type'])));
@@ -185,7 +191,7 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
       'description' => "Configure single long-text field for input format.",
       'arguments' => array(
         'field_instance' => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
-        'target_format' => "Target format machine name",
+        'target_format' => "Target format machine name. Provide \"<NULL>\" (including quotes) to disable text filtering.",
       ),
     );
 
@@ -285,11 +291,15 @@ function drush_media_ckeditor_extras_configure_single_long_text_field($field_ins
     $filter_formats_by_format[$filter_format->format] = $filter_format;
   }
   $filter_format_formats = array_keys($filter_formats_by_format);
+  if ($target_format == '<NULL>') {
+    $target_format = NULL;
+  }
 
-  if (!in_array($target_format, $filter_format_formats)) {
+  if (isset($target_format) && !in_array($target_format, $filter_format_formats)) {
     drupal_set_message(dt('Invalid target format name.'), 'error');
     return;
   }
+
 
   _media_ckeditor_extras_configure_long_text_field_to_limit_format($field_instance, $target_format);
 }
