@@ -69,6 +69,13 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
   $revision_field_name = $entity_info['entity keys']['revision'];
   $bundle_field_name = $entity_info['entity keys']['bundle'];
 
+  $source_has_null = FALSE;
+  if (in_array(NULL, $source_formats, TRUE)) {
+    $source_has_null = TRUE;
+    // Remove NULL format from array. It need special handling in SQL queries below.
+    $source_formats = array_filter($source_formats, function($var){return !is_null($var);} );
+  }
+
   $total_query = db_select($field_current_table, 'f')
     ->condition('f.deleted', 0)
     ->condition('f.entity_type', $entity_type);
@@ -82,8 +89,21 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
   }
   $current_total_count = $total_query->countQuery()->execute()->fetchField();
 
+  // Query to find field items currently using any of source format.
   $applicable_query = clone $total_query;
-  $applicable_query->condition("f.{$current_table_format_field}", $source_formats, 'IN');
+  if ($source_has_null && count($source_formats)) {
+    $applicable_query->condition(
+      db_or()
+      ->isNull("f.{$current_table_format_field}")
+      ->condition("f.{$current_table_format_field}", $source_formats, 'IN')
+    );
+  }
+  elseif ($source_has_null) {
+    $applicable_query->isNull("f.{$current_table_format_field}");
+  }
+  else {
+    $applicable_query->condition("f.{$current_table_format_field}", $source_formats, 'IN');
+  }
   $current_applicable_count = $applicable_query->countQuery()->execute()->fetchField();
 
   $query_args = array(':target_format' => $target_format, ':source_formats' => $source_formats);
@@ -96,13 +116,25 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
   if (!empty($revision_field_name)) {
     $revision_condition = "AND f.revision_id = n.{$revision_field_name}";
   }
+
+  $source_format_condition = '';
+  if ($source_has_null && count($source_formats)) {
+    $source_format_condition = "f.$current_table_format_field IS NULL OR f.$current_table_format_field IN (:source_formats)";
+  }
+  elseif ($source_has_null) {
+    $source_format_condition = "f.$current_table_format_field IS NULL";
+  }
+  else {
+    $source_format_condition = "f.$current_table_format_field IN (:source_formats)";
+  }
+
   $sql = "
     UPDATE {{$field_current_table}} AS f
     INNER JOIN {$entity_info['base table']} AS n ON f.entity_id = n.{$id_field_name} $revision_condition
     SET f.$current_table_format_field = :target_format
     WHERE f.deleted = 0 AND
       f.entity_type = '$entity_type' AND
-      f.$current_table_format_field IN (:source_formats) $bundle_condition";
+      $source_format_condition $bundle_condition";
   db_query($sql, $query_args);
 
   $total_query = db_select($field_revision_table, 'f')
@@ -119,7 +151,19 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
   $revision_total_count = $total_query->countQuery()->execute()->fetchField();
 
   $applicable_query = clone $total_query;
-  $applicable_query->condition("f.{$revision_table_format_field}", $source_formats, 'IN');
+  if ($source_has_null && count($source_formats)) {
+    $applicable_query->condition(
+      db_or()
+      ->isNull("f.{$revision_table_format_field}")
+      ->condition("f.{$revision_table_format_field}", $source_formats, 'IN')
+    );
+  }
+  elseif ($source_has_null) {
+    $applicable_query->isNull("f.{$revision_table_format_field}");
+  }
+  else {
+    $applicable_query->condition("f.{$revision_table_format_field}", $source_formats, 'IN');
+  }
   $revision_applicable_count = $applicable_query->countQuery()->execute()->fetchField();
 
   $query_args = array(':target_format' => $target_format, ':source_formats' => $source_formats);
@@ -137,7 +181,7 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
     SET f.$revision_table_format_field = :target_format
     WHERE f.deleted = 0 AND
       f.entity_type = '$entity_type' AND
-      f.$revision_table_format_field IN (:source_formats) $bundle_condition";
+      $source_format_condition $bundle_condition";
   db_query($sql, $query_args);
 
   printf(
@@ -214,7 +258,7 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
       'description' => "Re-assign text format for a specific entity type, bundle long text field values.",
       'arguments' => array(
         'field_instance' => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
-        'source_format' => "Source format machine name",
+        'source_format' => "Source format machine name. Provide \"<NULL>\" (including quotes) to select items with text filtering disabled.",
         'target_format' => "Target format machine name. Provide \"<NULL>\" (including quotes) to disable text filtering.",
       ),
     );
@@ -474,11 +518,15 @@ function drush_media_ckeditor_extras_long_text_field_reassign_format($field_inst
   }
   $filter_format_formats = array_keys($filter_formats_by_format);
 
+  if ($source_format == '<NULL>') {
+    $source_format = NULL;
+  }
+
   if ($target_format == '<NULL>') {
     $target_format = NULL;
   }
 
-  if (!in_array($source_format, $filter_format_formats) || (isset($target_format) && !in_array($target_format, $filter_format_formats))) {
+  if ( (isset($source_format) && !in_array($source_format, $filter_format_formats)) || (isset($target_format) && !in_array($target_format, $filter_format_formats))) {
     drupal_set_message(dt('Invalid source and/or target format name.'), 'error');
     return;
   }
