@@ -122,7 +122,7 @@
     <ul>
       <li>field_instance: Field instance in the form of &lt;entity-type&gt;:&lt;bundle&gt:&lt;field-name&gt. For example, node:page:body</li>
       <li>source_format: Source format machine name</li>
-      <li>target_format: Target format machine name</li>
+      <li>target_format: Target format machine name. Provide <NULL> (including quotes) to disable text filtering.</li>
     </ul>
     <p>Re-assigns all field items currently using source_format to use target_format.</p>
     <p>Proper analysis should be performed before running this command to check compatibility issues between source and target text formats. Or issues may occur in field output.</p>

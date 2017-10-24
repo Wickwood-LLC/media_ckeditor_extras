@@ -215,7 +215,7 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
       'arguments' => array(
         'field_instance' => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
         'source_format' => "Source format machine name",
-        'target_format' => "Target format machine name",
+        'target_format' => "Target format machine name. Provide \"<NULL>\" (including quotes) to disable text filtering.",
       ),
     );
 
@@ -474,7 +474,11 @@ function drush_media_ckeditor_extras_long_text_field_reassign_format($field_inst
   }
   $filter_format_formats = array_keys($filter_formats_by_format);
 
-  if (!in_array($source_format, $filter_format_formats) || !in_array($target_format, $filter_format_formats)) {
+  if ($target_format == '<NULL>') {
+    $target_format = NULL;
+  }
+
+  if (!in_array($source_format, $filter_format_formats) || (isset($target_format) && !in_array($target_format, $filter_format_formats))) {
     drupal_set_message(dt('Invalid source and/or target format name.'), 'error');
     return;
   }
