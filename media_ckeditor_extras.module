@@ -396,3 +396,186 @@ function media_ckeditor_extras_form_alter(&$form, &$form_state, $form_id) {
     }
   }
 }
+
+
+
+/**
+ * Implements hook_theme()
+ */
+function media_ckeditor_extras_theme($existing, $type, $theme, $path) {
+  return array(
+    'mce_icon_link' => array(
+      'variables' => array('file' => NULL, 'settings' => NULL),
+      'template' => 'mce-icon-link',
+      'path' => drupal_get_path('module', 'media_ckeditor_extras') . '/theme',
+    ),
+  );
+}
+
+function template_preprocess_mce_icon_link(&$variables) {
+  $variables['classes_array'][] = 'mce-icon-link-' . $variables['settings']['icon_position'];
+  $variables['icon'] = array(
+    '#theme' => 'image_formatter',
+    '#item' => (array) file_load($variables['settings']['icon']),
+    '#image_style' => $variables['settings']['icon_image_style'],
+  );
+  $variables['link_text'] = token_replace($variables['settings']['link_text'], array('file' => $variables['file']));
+
+  if ($variables['settings']['link_type'] == 'direct') {
+    $wrapper = file_stream_wrapper_get_instance_by_uri($variables['file']->uri);
+    if ($wrapper instanceof DrupalLocalStreamWrapper) {
+      // Create a relative URL to the local file.
+      // See https://www.drupal.org/node/837794.
+      $path = $wrapper->getDirectoryPath() . '/' . file_uri_target($variables['file']->uri);
+    }
+    else {
+      $path = file_create_url($variables['file']->uri);
+    }
+    $variables['link_url'] = $path;
+  }
+  else if ($variables['settings']['link_type'] == 'download') {
+    $uri = file_entity_download_uri($variables['file']);
+    $variables['link_url'] = url($uri['path'], $uri['options']);
+  }
+  drupal_add_css(drupal_get_path('module', 'media_ckeditor_extras') . '/css/mce-icon-link.css');
+}
+
+/**
+ * Implements hook_file_formatter_info().
+ */
+function media_ckeditor_extras_file_formatter_info() {
+  $formatters['mce_icon_link'] = array(
+    'label' => t('Icon link'),
+    'description' => t('All-purpose link with icon.'),
+    'file types' => array('audio', 'document', 'image', 'video'),
+    'mime types' => array('*/*', 'image/*', 'text/*', 'video/*'),
+    'default settings' => array(
+      'icon' => NULL,
+      'icon_image_style' => 'thumbnail',
+      'icon_position' => 'left',
+      'link_text' => '',
+      'link_type' => 'direct',
+    ),
+    'view callback' => 'media_ckeditor_extras_file_formatter_icon_link_view',
+    'settings callback' => 'media_ckeditor_extras_file_formatter_icon_link_settings',
+  );
+
+  return $formatters;
+}
+
+
+/**
+ * Implements hook_file_formatter_FORMATTER_view().
+ */
+function media_ckeditor_extras_file_formatter_icon_link_view($file, $display, $langcode) {
+  $scheme = file_uri_scheme($file->uri);
+
+  $element = array(
+    '#theme' => 'mce_icon_link',
+    '#file' => $file,
+    '#settings' => $display['settings'],
+  );
+
+  return $element;
+}
+
+/**
+ * Implements hook_file_formatter_FORMATTER_settings().
+ */
+function media_ckeditor_extras_file_formatter_icon_link_settings(&$form, &$form_state, $settings) {
+  $form_state['storage']['original_icon_link_settings'] = $settings;
+  $element = array();
+
+  $element['icon'] = array(
+    '#type' => 'media',
+    '#title' => t('Icon'),
+    '#default_value' => $settings['icon'],
+    '#description' => t('Set an icon.'),
+    '#theme' => 'media_widget', // Without that, you only get text input
+    '#media_options' => array(
+      'global' => array(
+        'file_extensions' => 'png gif jpg jpeg',
+        'max_filesize'    => '2 MB',
+        'uri_scheme'      => 'public',
+        'types'           => array('image'),
+        'schemes'         => array(
+          'public' => 'public',
+        ),
+      ),
+    ),
+  );
+
+  $element['icon_image_style'] = array(
+    '#type' => 'select',
+    '#title' => t('Icon image style'),
+    '#options' => image_style_options(FALSE),
+    '#default_value' => $settings['icon_image_style'],
+    '#description' => t('Image style to be used for the icon image.'),
+  );
+
+  $element['icon_position'] = array(
+    '#title' => t('Icon position'),
+    '#type' => 'radios',
+    '#description' => t('Select icon position'),
+    '#options' => array(
+      'top' => t('Top'),
+      'right' => t('Right'),
+      'bottom' => t('Bottom'),
+      'left' => t('Left'),
+    ),
+    '#default_value' => $settings['icon_position'],
+  );
+
+  $element['link_text'] = array(
+    '#title' => 'Link text',
+    '#type' => 'textfield',
+    '#description' => t('You may use file and global tokens.'),
+    '#default_value' => $settings['link_text'],
+  );
+
+  $element['link_type'] = array(
+    '#title' => 'Link type',
+    '#type' => 'radios',
+    '#options' => array(
+      'direct' => t('Direct'),
+      'download' => t('Download'),
+    ),
+    '#description' => t(''),
+    '#default_value' => $settings['link_type'],
+  );
+
+  return $element;
+}
+
+function media_ckeditor_extras_file_formatter_icon_link_settings_submit($form, &$form_state) {
+  if (!isset($form_state['values']['displays']['mce_icon_link']['status']) || !$form_state['values']['displays']['mce_icon_link']['status']) {
+    return;
+  }
+  $original_settings = $form_state['storage']['original_icon_link_settings'];
+  $settings = $form_state['values']['displays']['mce_icon_link']['settings'];
+  // Make file permanent or it will be temporary file and may get deleted soon.
+  if ((!empty($settings['icon']) && $original_settings['icon'] != $settings['icon'])) {
+    $image = file_load($settings['icon']);
+    // Add file usage or this issue may occur: https://drupal.stackexchange.com/questions/4433/managed-file-the-file-used-in-the-field-may-not-be-referenced
+    file_usage_add($image, 'media_ckeditor_extras', 'icon_link', 0);
+  }
+  else if (!empty($original_settings['icon']) && empty($settings['icon'])) {
+    $image = file_load($original_settings['icon']);
+    file_usage_delete($image, 'media_ckeditor_extras', 'user_registration_form', 0);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Alter form to attach our custom submit handler.
+ */
+function media_ckeditor_extras_form_file_entity_file_display_form_alter(&$form, &$form_state) {
+  $view_mode = $form['#view_mode'];
+
+  if ($view_mode != 'none') {
+    array_unshift($form['#submit'], 'media_ckeditor_extras_file_formatter_icon_link_settings_submit');
+  }
+
+  return $form;
+}

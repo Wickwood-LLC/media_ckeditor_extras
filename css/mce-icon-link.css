@@ -1,0 +1,16 @@
+.mce-icon-link {
+  display: inline-block;
+}
+
+.mce-icon-link .icon img {
+  display: inline;
+}
+
+.mce-icon-link-top .icon,
+.mce-icon-link-top .text,
+.mce-icon-link-bottom .icon,
+.mce-icon-link-bottom .text {
+  /* display: inline-block; */
+  float: left;
+  clear: left;
+}
