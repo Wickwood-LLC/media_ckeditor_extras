@@ -410,6 +410,10 @@ function media_ckeditor_extras_theme($existing, $type, $theme, $path) {
       'template' => 'mce-icon-link',
       'path' => drupal_get_path('module', 'media_ckeditor_extras') . '/theme',
     ),
+    'media_ckeditor_extras_settings_form_mime_icons' => array(
+      'render element' => 'element',
+      'file' => 'pages/media_ckeditor_extras.admin.inc',
+    ),
   );
 }
 
@@ -598,4 +602,20 @@ function media_ckeditor_extras_form_file_entity_file_display_form_alter(&$form, 
   }
 
   return $form;
+}
+
+/**
+ * Implements hook_menu()
+ */
+function media_ckeditor_extras_menu() {
+  $items['admin/config/media/mce'] = array(
+    'title' => 'Media CKEditor Extras',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('media_ckeditor_extras_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+    'file' => 'pages/media_ckeditor_extras.admin.inc',
+  );
+
+  return $items;
 }
