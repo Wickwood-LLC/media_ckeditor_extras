@@ -292,6 +292,7 @@ function media_ckeditor_extras_ckeditor_settings_alter(&$settings, $conf) {
       $styles .= "\n" . $field['settings']['css_style_text'];
     }
   }
+  $styles .= "\n" . file_get_contents(drupal_get_path('module', 'media_ckeditor_extras') . '/css/mce-icon-link.css');
   $js_setting = array(
     'media_ckeditor_extras' => array(
       'styles' => array(
@@ -413,7 +414,14 @@ function media_ckeditor_extras_theme($existing, $type, $theme, $path) {
 }
 
 function template_preprocess_mce_icon_link(&$variables) {
-  $variables['classes_array'][] = 'mce-icon-link-' . $variables['settings']['icon_position'];
+  $variables['icon_position'] = $variables['settings']['icon_position'];
+  if (!empty($variables['settings']['icon_position_overriding_field'])) {
+    $items = field_get_items('file', $variables['file'], $variables['settings']['icon_position_overriding_field']);
+    if (!empty($items) && in_array($items[0]['value'], array('top', 'bottom', 'right', 'left'))) {
+      $variables['icon_position'] = $items[0]['value'];
+    }
+  }
+  $variables['classes_array'][] = 'mce-icon-link-' . $variables['icon_position'];
   $variables['icon'] = array(
     '#theme' => 'image_formatter',
     '#item' => (array) file_load($variables['settings']['icon']),
@@ -453,6 +461,7 @@ function media_ckeditor_extras_file_formatter_info() {
       'icon' => NULL,
       'icon_image_style' => 'thumbnail',
       'icon_position' => 'left',
+      'icon_position_overriding_field' => '',
       'link_text' => '',
       'link_type' => 'direct',
     ),
@@ -514,7 +523,7 @@ function media_ckeditor_extras_file_formatter_icon_link_settings(&$form, &$form_
   );
 
   $element['icon_position'] = array(
-    '#title' => t('Icon position'),
+    '#title' => t('Default icon position'),
     '#type' => 'radios',
     '#description' => t('Select icon position'),
     '#options' => array(
@@ -524,6 +533,17 @@ function media_ckeditor_extras_file_formatter_icon_link_settings(&$form, &$form_
       'left' => t('Left'),
     ),
     '#default_value' => $settings['icon_position'],
+  );
+
+  $select_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', $form['#file_type'], 'list_text');
+  $element['icon_position_overriding_field'] = array(
+    '#title' => t('Icon position overriding field'),
+    '#type' => 'select',
+    '#description' => t('Select field that will override icon position'),
+    '#options' => $select_fields,
+    '#default_value' => $settings['icon_position_overriding_field'],
+    '#empty_option' => t('- Select a field -'),
+    '#empty_value' => '',
   );
 
   $element['link_text'] = array(
