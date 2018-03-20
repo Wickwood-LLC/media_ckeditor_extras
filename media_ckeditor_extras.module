@@ -442,7 +442,16 @@ function template_preprocess_mce_icon_link(&$variables) {
       '#image_style' => $variables['settings']['icon_image_style'],
     );
   }
-  $variables['link_text'] = token_replace($variables['settings']['link_text'], array('file' => $variables['file']));
+
+  if (!empty($variables['settings']['link_text_overriding_field'])) {
+    $items = field_get_items('file', $variables['file'], $variables['settings']['link_text_overriding_field']);
+    if (!empty($items)) {
+      $variables['link_text'] = trim($items[0]['value']);
+    }
+  }
+  if (empty($variables['link_text']) && $variables['settings']['filename_as_link_text']) {
+    $variables['link_text'] = $variables['file']->filename;
+  }
 
   if ($variables['settings']['link_type'] == 'direct') {
     $wrapper = file_stream_wrapper_get_instance_by_uri($variables['file']->uri);
@@ -476,7 +485,8 @@ function media_ckeditor_extras_file_formatter_info() {
       'icon_image_style' => 'thumbnail',
       'icon_position' => 'left',
       'icon_position_overriding_field' => '',
-      'link_text' => '',
+      'link_text_overriding_field' => '',
+      'filename_as_link_text' => TRUE,
       'link_type' => 'direct',
     ),
     'view callback' => 'media_ckeditor_extras_file_formatter_icon_link_view',
@@ -541,11 +551,22 @@ function media_ckeditor_extras_file_formatter_icon_link_settings(&$form, &$form_
     '#empty_value' => '',
   );
 
-  $element['link_text'] = array(
-    '#title' => 'Link text',
-    '#type' => 'textfield',
-    '#description' => t('You may use file and global tokens.'),
-    '#default_value' => $settings['link_text'],
+  $text_fields = media_ckeditor_extras_fields_by_type_by_bundle('file', $form['#file_type'], 'text');
+  $element['link_text_overriding_field'] = array(
+    '#title' => t('Link text overriding field'),
+    '#type' => 'select',
+    '#description' => t('Select field that will override link text'),
+    '#options' => $text_fields,
+    '#default_value' => $settings['link_text_overriding_field'],
+    '#empty_option' => t('- Select a field -'),
+    '#empty_value' => '',
+  );
+
+  $element['filename_as_link_text'] = array(
+    '#title' => t('Use file name as link text'),
+    '#type' => 'checkbox',
+    '#default_value' => $settings['filename_as_link_text'],
+    '#description' => t('If enabled, file name will be link text when no field is selected above for linkt text or actual value of link text field selected above is empty.'),
   );
 
   $element['link_type'] = array(
