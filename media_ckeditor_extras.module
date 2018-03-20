@@ -426,11 +426,22 @@ function template_preprocess_mce_icon_link(&$variables) {
     }
   }
   $variables['classes_array'][] = 'mce-icon-link-' . $variables['icon_position'];
-  $variables['icon'] = array(
-    '#theme' => 'image_formatter',
-    '#item' => (array) file_load($variables['settings']['icon']),
-    '#image_style' => $variables['settings']['icon_image_style'],
-  );
+  $icon = NULL;
+  //file_entity_match_mimetypes
+  foreach (variable_get('mce_mime_icons', array()) as $mime_icon) {
+    $mimes = preg_split ('/$\R?^/m', $mime_icon['mime']);
+    if (file_entity_match_mimetypes($variables['file']->filemime, $mimes)) {
+      $icon = $mime_icon['icon'];
+      break;
+    }
+  }
+  if ($icon) {
+    $variables['icon'] = array(
+      '#theme' => 'image_formatter',
+      '#item' => (array) file_load($icon),
+      '#image_style' => $variables['settings']['icon_image_style'],
+    );
+  }
   $variables['link_text'] = token_replace($variables['settings']['link_text'], array('file' => $variables['file']));
 
   if ($variables['settings']['link_type'] == 'direct') {
