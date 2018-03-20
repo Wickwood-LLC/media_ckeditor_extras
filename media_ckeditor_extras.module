@@ -531,10 +531,10 @@ function media_ckeditor_extras_file_formatter_icon_link_settings(&$form, &$form_
     '#type' => 'radios',
     '#description' => t('Select icon position'),
     '#options' => array(
-      'top' => t('Top'),
-      'right' => t('Right'),
-      'bottom' => t('Bottom'),
       'left' => t('Left'),
+      'right' => t('Right'),
+      'top' => t('Top'),
+      'bottom' => t('Bottom'),
     ),
     '#default_value' => $settings['icon_position'],
   );
