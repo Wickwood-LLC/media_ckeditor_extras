@@ -473,7 +473,6 @@ function media_ckeditor_extras_file_formatter_info() {
     'file types' => array('audio', 'document', 'image', 'video'),
     'mime types' => array('*/*', 'image/*', 'text/*', 'video/*'),
     'default settings' => array(
-      'icon' => NULL,
       'icon_image_style' => 'thumbnail',
       'icon_position' => 'left',
       'icon_position_overriding_field' => '',
@@ -510,31 +509,12 @@ function media_ckeditor_extras_file_formatter_icon_link_settings(&$form, &$form_
   $form_state['storage']['original_icon_link_settings'] = $settings;
   $element = array();
 
-  $element['icon'] = array(
-    '#type' => 'media',
-    '#title' => t('Icon'),
-    '#default_value' => $settings['icon'],
-    '#description' => t('Set an icon.'),
-    '#theme' => 'media_widget', // Without that, you only get text input
-    '#media_options' => array(
-      'global' => array(
-        'file_extensions' => 'png gif jpg jpeg',
-        'max_filesize'    => '2 MB',
-        'uri_scheme'      => 'public',
-        'types'           => array('image'),
-        'schemes'         => array(
-          'public' => 'public',
-        ),
-      ),
-    ),
-  );
-
   $element['icon_image_style'] = array(
     '#type' => 'select',
     '#title' => t('Icon image style'),
     '#options' => image_style_options(FALSE),
     '#default_value' => $settings['icon_image_style'],
-    '#description' => t('Image style to be used for the icon image.'),
+    '#description' => t('Image style to be used for the icon image. You can configure icons for each mime !here_link', array('!here_link' => l(t('here'), 'admin/config/media/mce', array('attributes' => array('target' => '__blank'))))),
   );
 
   $element['icon_position'] = array(
@@ -586,18 +566,8 @@ function media_ckeditor_extras_file_formatter_icon_link_settings_submit($form, &
   if (!isset($form_state['values']['displays']['mce_icon_link']['status']) || !$form_state['values']['displays']['mce_icon_link']['status']) {
     return;
   }
-  $original_settings = $form_state['storage']['original_icon_link_settings'];
-  $settings = $form_state['values']['displays']['mce_icon_link']['settings'];
-  // Make file permanent or it will be temporary file and may get deleted soon.
-  if ((!empty($settings['icon']) && $original_settings['icon'] != $settings['icon'])) {
-    $image = file_load($settings['icon']);
-    // Add file usage or this issue may occur: https://drupal.stackexchange.com/questions/4433/managed-file-the-file-used-in-the-field-may-not-be-referenced
-    file_usage_add($image, 'media_ckeditor_extras', 'icon_link', 0);
-  }
-  else if (!empty($original_settings['icon']) && empty($settings['icon'])) {
-    $image = file_load($original_settings['icon']);
-    file_usage_delete($image, 'media_ckeditor_extras', 'user_registration_form', 0);
-  }
+  //$original_settings = $form_state['storage']['original_icon_link_settings'];
+  //$settings = $form_state['values']['displays']['mce_icon_link']['settings'];
 }
 
 /**
