@@ -42,6 +42,7 @@ function media_ckeditor_extras_settings_form($form, &$form_state) {
       '#type' => 'submit',
       '#value' => t('Remove'),
       '#name' => 'remove_'. $index,
+      '#limit_validation_errors' => array(),
       '#submit' => array('media_ckeditor_extras_settings_form_remove_mime_icon_submit'),
       '#ajax' => array(
           'callback' => 'media_ckeditor_extras_settings_form_add_more_mime_icon_callback',
@@ -59,6 +60,7 @@ function media_ckeditor_extras_settings_form($form, &$form_state) {
   $form['mime_icons_add_one'] = array(
     '#type' => 'submit',
     '#value' => t('Add more'),
+    '#limit_validation_errors' => array(),
     '#submit' => array('media_ckeditor_extras_settings_form_add_more_mime_icon_submit'),
     '#ajax' => array(
         'callback' => 'media_ckeditor_extras_settings_form_add_more_mime_icon_callback',
@@ -127,5 +129,12 @@ function media_ckeditor_extras_settings_form_validate($form, &$form_state) {
 }
 
 function media_ckeditor_extras_settings_form_submit($form, &$form_state) {
+  usort($form_state['values']['mime_icons'], function($a, $b){
+    if ($a['weight'] == $b['weight']) {
+        return 0;
+    }
+    return ($a['weight'] < $b['weight']) ? -1 : 1;
+  });
   variable_set('mce_mime_icons', $form_state['values']['mime_icons']);
+  drupal_set_message(t('Configuration settings has been saved.'));
 }
