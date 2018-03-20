@@ -1,7 +1,7 @@
 <?php
 
 function media_ckeditor_extras_settings_form($form, &$form_state) {
-  if (empty($form_state['storage']['mime_icons'])) {
+  if (!isset($form_state['storage']['mime_icons'])) {
     $form_state['storage']['mime_icons'] = variable_get('mce_mime_icons', array());
   }
 
@@ -37,6 +37,16 @@ function media_ckeditor_extras_settings_form($form, &$form_state) {
       ),
       '#default_value' => $mime_icon['icon'],
       '#required' => TRUE,
+    );
+    $form['mime_icons'][$index]['remove'] = array(
+      '#type' => 'submit',
+      '#value' => t('Remove'),
+      '#name' => 'remove_'. $index,
+      '#submit' => array('media_ckeditor_extras_settings_form_remove_mime_icon_submit'),
+      '#ajax' => array(
+          'callback' => 'media_ckeditor_extras_settings_form_add_more_mime_icon_callback',
+          'wrapper' => 'mce-settings-mime-icons',
+      ),
     );
     $form['mime_icons'][$index]['weight'] = array(
       '#type' => 'weight',
@@ -77,6 +87,7 @@ function theme_media_ckeditor_extras_settings_form_mime_icons(&$variables) {
       'data' => array(
         drupal_render($element[$name]['mime']),
         drupal_render($element[$name]['icon']),
+        drupal_render($element[$name]['remove']),
         drupal_render($element[$name]['weight']),
       ),
       'class' => array('draggable'),
@@ -95,6 +106,12 @@ function media_ckeditor_extras_settings_form_add_more_mime_icon_callback($form, 
 
 function media_ckeditor_extras_settings_form_add_more_mime_icon_submit($form, &$form_state) {
   $form_state['storage']['mime_icons'][] = array('mime' => '');
+  $form_state['rebuild'] = TRUE;
+}
+
+function media_ckeditor_extras_settings_form_remove_mime_icon_submit($form, &$form_state) {
+  list($temp, $index) = explode('_', $form_state['clicked_button']['#name']);
+  unset($form_state['storage']['mime_icons'][(int)$index]);
   $form_state['rebuild'] = TRUE;
 }
 

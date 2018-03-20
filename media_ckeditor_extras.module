@@ -613,7 +613,6 @@ function media_ckeditor_extras_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('media_ckeditor_extras_settings_form'),
     'access arguments' => array('administer site configuration'),
-    'type' => MENU_CALLBACK,
     'file' => 'pages/media_ckeditor_extras.admin.inc',
   );
 
