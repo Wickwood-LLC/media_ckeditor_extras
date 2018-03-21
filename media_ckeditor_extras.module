@@ -524,7 +524,7 @@ function media_ckeditor_extras_file_formatter_icon_link_settings(&$form, &$form_
     '#title' => t('Icon image style'),
     '#options' => image_style_options(FALSE),
     '#default_value' => $settings['icon_image_style'],
-    '#description' => t('Image style to be used for the icon image. You can configure icons for each mime !here_link', array('!here_link' => l(t('here'), 'admin/config/media/mce', array('attributes' => array('target' => '__blank'))))),
+    '#description' => t('Image style to be used for the icon image. <em>!here_link</em>', array('!here_link' => l(t('You can configure icons for each mime here'), 'admin/config/media/mce', array('attributes' => array('target' => '__blank'))))),
   );
 
   $element['icon_position'] = array(
