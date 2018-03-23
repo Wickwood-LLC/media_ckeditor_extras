@@ -368,6 +368,7 @@ function media_ckeditor_extras_init() {
       media_ckeditor_extras_add_styles_for_css_field($field_name);
     }
     drupal_add_css(drupal_get_path('module', 'media_ckeditor_extras') . '/css/media-ckeditor-extras.css');
+    drupal_add_css(drupal_get_path('module', 'media_ckeditor_extras') . '/css/mce-icon-link.css');
   }
 }
 
