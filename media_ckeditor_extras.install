@@ -1,34 +1,11 @@
 <?php
 
 /**
- * Implements hook_field_schema().
- */
-function media_ckeditor_extras_field_schema($field) {
-  switch ($field['type']) {
-    case 'css_class':
-      $columns = array(
-        'value' => array(
-          'type' => 'varchar',
-          'length' => 255,
-          'not null' => FALSE,
-        ),
-      );
-      break;
-  }
-  return array(
-    'columns' => $columns,
-    'indexes' => array(
-      'value' => array('value'),
-    ),
-  );
-}
-
-/**
  * Implements hook_uninstall().
  */
-function media_ckeditor_extras_uninstall() {
-  $f = entity_get_info('file');
-  foreach(array_keys($f['bundles']) as $type) {
-    variable_del("media_ckeditor_extras_file_{$type}_link");
-  }
-}
+// function media_ckeditor_extras_uninstall() {
+//   $f = entity_get_info('file');
+//   foreach(array_keys($f['bundles']) as $type) {
+//     variable_del("media_ckeditor_extras_file_{$type}_link");
+//   }
+// }
