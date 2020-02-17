@@ -42,24 +42,24 @@
   <li>Go to "<?php print l('Text formats', 'admin/config/content/formats'); ?>" page and for each input format uses the Media CKEditor Extras:
     <ul>
       <li>Select Roles that will have access to Embedding Media in WYSIWYG Editors</li>
-      <li>Enable "Convert Media Tags to Markup" and ensure
+      <li>Enable "Convert Media Tags to Markup" and under "Filter processing order" ensure
         <ul>
           <li>"Convert Media tags to markup" filter is above "Convert URLs into links" filter.</li>
-          <li>"Convert line breaks into HTML (i.e. &lt;br&gt; and &lt;p&gt;)" and "Limit allowed HTML tags" filters are before "Convert Media tags to markup" under "Filter processing order".</li>
+          <li>"Convert line breaks into HTML (i.e. &lt;br&gt; and &lt;p&gt;)" and "Limit allowed HTML tags" filters are above "Convert Media tags to markup".</li>
         </ul>
         <ul>
           <li>Note: Media CKEditor Extras Features module should have provided this configuration for the Text Formats it provides, but if you add others you will want to be sure to configure things as above.</li>
         </ul>
       </li>
       <li>
-        <p>Disable the filter "Ensure That Embedded Media Tags Are Not Contained In Paragraphs”. This should be disabled by default. This filter is mainly to help linking embedded media. We are using separate link field for that purpose so better we keep it disabled.</p>
+        <p>Disable the filter "Ensure That Embedded Media Tags Are Not Contained In Paragraphs”. This should be disabled by default. This filter is mainly to help linking embedded media. We are using separate link field for that purpose so better that it is kept disabled.</p>
         <p></p>
       </li>
     </ul>
   </li>
   <li>
     <p>Confirm that you have "Image" file display enabled and the appropriate Image Style selected for each of view modes at "<?php print l('Manage File Display', 'admin/structure/file-types/manage/image/file-display'); ?>" that need Media CKEditor Extras to work.</p>
-    <p>(Assuming Picture module is already installed and configured) For responsive image embeddings, you have to enable "Picture" file display to use responsive image style. We also required to enable "Image" formatter as well and make sure it is under "Picture" formatter under "Display precedence order" section. It appears to be a bug is there, so these changes may not take effect. To fix it, we need to move "Image" formatter above to "Picture" and save configurations, then move "Image" below to "Picture" and save configuration again.</li>
+    <p>For responsive image embeddings, once Picture module is installed and configured, you have to enable "Picture" file display for Image Media Type to use responsive image style. We also required to enable "Image" formatter as well and make sure it is under "Picture" formatter under "Display precedence order" section. However, there appears to be bug with these formatters when first enabled, so these changes may not take effect. To fix it, move "Image" formatter above to "Picture" formatter and save configurations, then move "Image" formatter back below to "Picture" and save configuration again. Without doing this, only Image Formatter will execute and images will not be responsive with “Picture”.</li>
   <li>To create a view mode to display image with caption:
     <ul>
       <li>Choose sub-tab for the view mode that will have a caption on <?php print l('Manage display', 'admin/structure/file-types/manage/image/display'); ?> page. (If you need to create new one first, you can do that on <?php print l('Entity view modes', 'admin/config/system/entity-view-modes'); ?>. This requires the “entity_view_mode” module.)</li>
