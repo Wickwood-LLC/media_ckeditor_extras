@@ -14,14 +14,15 @@ function _media_ckeditor_extras_get_long_text_fields() {
   }
   return $fields;
 }
-
 /**
  * Return array of all field instances of specified types.
  */
 function _media_ckeditor_extras_get_field_instances_by_type($field_types) {
   $field_instances = array();
 
-  $query = db_select('field_config_instance', 'fci')
+  // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+  // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+  $query = \Drupal::database()->select('field_config_instance', 'fci')
     ->fields('fci', array('id', 'entity_type', 'bundle', 'field_name'))
     ->condition('fci.deleted', 0);
   $query->join('field_config', 'fc', 'fci.field_id = fc.id');
@@ -36,27 +37,22 @@ function _media_ckeditor_extras_get_field_instances_by_type($field_types) {
   }
   return $field_instances;
 }
-
 function _media_ckeditor_extras_get_field_current_table($field) {
   $field_current_tbl_name = array_keys($field['storage']['details']['sql']['FIELD_LOAD_CURRENT']);
   return  reset($field_current_tbl_name);
 }
-
 function _media_ckeditor_extras_get_field_revision_table($field) {
   $field_revision_tbl_name = array_keys($field['storage']['details']['sql']['FIELD_LOAD_REVISION']);
   return  reset($field_revision_tbl_name);
 }
-
 function _media_ckeditor_extras_long_text_field_current_table_get_format_column($field) {
   $table = _media_ckeditor_extras_get_field_current_table($field);
   return $field['storage']['details']['sql']['FIELD_LOAD_CURRENT'][$table]['format'];
 }
-
 function _media_ckeditor_extras_long_text_field_revision_table_get_format_column($field) {
   $table = _media_ckeditor_extras_get_field_revision_table($field);
   return $field['storage']['details']['sql']['FIELD_LOAD_REVISION'][$table]['format'];
 }
-
 function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $source_formats, $target_format, $entity_type, $bundle = NULL) {
   $field_current_table =  _media_ckeditor_extras_get_field_current_table($field);
   $field_revision_table = _media_ckeditor_extras_get_field_revision_table($field);
@@ -76,7 +72,9 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
     $source_formats = array_filter($source_formats, function($var){return !is_null($var);} );
   }
 
-  $total_query = db_select($field_current_table, 'f')
+  // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+  // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+  $total_query = \Drupal::database()->select($field_current_table, 'f')
     ->condition('f.deleted', 0)
     ->condition('f.entity_type', $entity_type);
   $join_conditions = "f.entity_id = n.{$id_field_name}";
@@ -135,9 +133,13 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
     WHERE f.deleted = 0 AND
       f.entity_type = '$entity_type' AND
       $source_format_condition $bundle_condition";
-  db_query($sql, $query_args);
+  // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+  // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+  \Drupal::database()->query($sql, $query_args);
 
-  $total_query = db_select($field_revision_table, 'f')
+  // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+  // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+  $total_query = \Drupal::database()->select($field_revision_table, 'f')
     ->condition('f.deleted', 0)
     ->condition('f.entity_type', $entity_type);
   $join_conditions = "f.entity_id = n.{$id_field_name}";
@@ -182,7 +184,9 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
     WHERE f.deleted = 0 AND
       f.entity_type = '$entity_type' AND
       $source_format_condition $bundle_condition";
-  db_query($sql, $query_args);
+  // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+  // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+  \Drupal::database()->query($sql, $query_args);
 
   printf(
     "%s (%s: %d/%d, %s: %d/%d)\n",
@@ -191,7 +195,6 @@ function _media_ckeditor_extras_long_text_field_reassign_text_format($field, $so
     $field_revision_table, $revision_applicable_count, $revision_total_count
   );
 }
-
 function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field_instance, $target_format) {
   $filter_formats = filter_formats();
 
@@ -214,86 +217,83 @@ function _media_ckeditor_extras_configure_long_text_field_to_limit_format($field
   }
   // Save field instance configuration.
   field_update_instance($field_instance);
-  drupal_set_message(t('Updated "!label" field of @bundle @entity_type', array('!label' => $field_instance['label'], '@bundle' => $field_instance['bundle'], '@entity_type' => $field_instance['entity_type'])));
+  \Drupal::messenger()->addStatus(t('Updated "!label" field of @bundle @entity_type', array('!label' => $field_instance['label'], '@bundle' => $field_instance['bundle'], '@entity_type' => $field_instance['entity_type'])));
 }
+/**
+ * Implements hook_drush_command().
+ */
+function media_ckeditor_extras_drush_command() {
+  $items = array();
 
- /**
-  * Implements hook_drush_command().
-  */
- function media_ckeditor_extras_drush_command() {
-   $items = array();
+   $items['media-ckeditor-extras-list-all-long-text-field-instances'] = array(
+    'description' => "List all long-text field instances in the site. It outputs each field instance in the form <entity-type>:<bundle>:<field-name>, one in each line.",
+   );
 
-    $items['media-ckeditor-extras-list-all-long-text-field-instances'] = array(
-     'description' => "List all long-text field instances in the site. It outputs each field instance in the form <entity-type>:<bundle>:<field-name>, one in each line.",
-    );
+   $items['media-ckeditor-extras-configure-all-long-text-fields'] = array(
+     'description' => "Configure all long-text fields for input format.",
+   );
 
-    $items['media-ckeditor-extras-configure-all-long-text-fields'] = array(
-      'description' => "Configure all long-text fields for input format.",
-    );
+   $items['media-ckeditor-extras-configure-single-long-text-field'] = array(
+     'description' => "Configure single long-text field for input format.",
+     'arguments' => array(
+       'field_instance' => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
+       'target_format' => "Target format machine name. Provide \"<NULL>\" (including quotes) to disable text filtering.",
+     ),
+   );
 
-    $items['media-ckeditor-extras-configure-single-long-text-field'] = array(
-      'description' => "Configure single long-text field for input format.",
-      'arguments' => array(
-        'field_instance' => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
-        'target_format' => "Target format machine name. Provide \"<NULL>\" (including quotes) to disable text filtering.",
-      ),
-    );
+   $items['media-ckeditor-extras-long-text-values-reassign-formats'] = array(
+     'description' => "Re-assign text format for all long text fields of nodes.",
+   );
 
-    $items['media-ckeditor-extras-long-text-values-reassign-formats'] = array(
-      'description' => "Re-assign text format for all long text fields of nodes.",
-    );
+   $items['media-ckeditor-extras-long-text-field-statistics'] = array(
+     'description' => "Show number of usage of each text format",
+     'arguments' => array(
+       'field_instance'        => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
+     ),
+   );
 
-    $items['media-ckeditor-extras-long-text-field-statistics'] = array(
-      'description' => "Show number of usage of each text format",
-      'arguments' => array(
-        'field_instance'        => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
-      ),
-    );
+   $items['media-ckeditor-extras-long-text-field-statistics-bulk'] = array(
+     'description' => "Show number of usage of each text format in each fields provided. Field instances in the form of <entity-type>:<bundle>:<field-name>, one in each line to be provided. Empty lines will be ignored.",
+   );
 
-    $items['media-ckeditor-extras-long-text-field-statistics-bulk'] = array(
-      'description' => "Show number of usage of each text format in each fields provided. Field instances in the form of <entity-type>:<bundle>:<field-name>, one in each line to be provided. Empty lines will be ignored.",
-    );
+   $items['media-ckeditor-extras-long-text-field-reassign-format'] = array(
+     'description' => "Re-assign text format for a specific entity type, bundle long text field values.",
+     'arguments' => array(
+       'field_instance' => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
+       'source_format' => "Source format machine name. Provide \"<NULL>\" (including quotes) to select items with text filtering disabled.",
+       'target_format' => "Target format machine name. Provide \"<NULL>\" (including quotes) to disable text filtering.",
+     ),
+   );
 
-    $items['media-ckeditor-extras-long-text-field-reassign-format'] = array(
-      'description' => "Re-assign text format for a specific entity type, bundle long text field values.",
-      'arguments' => array(
-        'field_instance' => "Field instance in the form of <entity-type>:<bundle>:<field-name>. For example, node:page:body",
-        'source_format' => "Source format machine name. Provide \"<NULL>\" (including quotes) to select items with text filtering disabled.",
-        'target_format' => "Target format machine name. Provide \"<NULL>\" (including quotes) to disable text filtering.",
-      ),
-    );
+   $items['media-ckeditor-extras-long-text-field-identify'] = array(
+     'description' => "Show field items using specified particular format",
+     'arguments' => array(
+       'field_instance_with_format' => "Field instance in the form of <entity-type>:<bundle>:<field-name>:<format>. For example, node:page:body:full_html",
+     ),
+   );
 
-    $items['media-ckeditor-extras-long-text-field-identify'] = array(
-      'description' => "Show field items using specified particular format",
-      'arguments' => array(
-        'field_instance_with_format' => "Field instance in the form of <entity-type>:<bundle>:<field-name>:<format>. For example, node:page:body:full_html",
-      ),
-    );
+   $items['media-ckeditor-extras-detect-file-types'] = array(
+     'description' => "Detect and assign file types to files that are still having 'default' as file type.",
+     'options' => array(
+       'type' => 'The type of files to be inspected. By default it will be "default".',
+       'non-strict' => 'Do not check file type to be valid one. Useful if file type was disabled or deleted.',
+     ),
+   );
 
-    $items['media-ckeditor-extras-detect-file-types'] = array(
-      'description' => "Detect and assign file types to files that are still having 'default' as file type.",
-      'options' => array(
-        'type' => 'The type of files to be inspected. By default it will be "default".',
-        'non-strict' => 'Do not check file type to be valid one. Useful if file type was disabled or deleted.',
-      ),
-    );
-
-   return $items;
- }
-
+  return $items;
+}
 function drush_media_ckeditor_extras_list_all_long_text_field_instances() {
   $long_text_field_instances = _media_ckeditor_extras_get_field_instances_by_type(array('text_long', 'text_with_summary'));
   foreach ($long_text_field_instances as $field_instance) {
     print dt("@entity_type:@bundle:@field_name", array('@entity_type' => $field_instance['entity_type'], '@bundle' => $field_instance['bundle'], '@field_name' => $field_instance['field_name'])) . PHP_EOL;
   }
 }
-
 /**
  * Drush command to configure all long-text field instances for its text format.
  */
 function drush_media_ckeditor_extras_configure_all_long_text_fields() {
   if (!module_exists('better_formats')) {
-    drupal_set_message(t('better_formats module is required.'), 'error');
+    \Drupal::messenger()->addError(t('better_formats module is required.'));
     return;
   }
 
@@ -318,14 +318,13 @@ function drush_media_ckeditor_extras_configure_all_long_text_fields() {
     _media_ckeditor_extras_configure_long_text_field_to_limit_format($field_instance, $target_format);
   }
 }
-
 function drush_media_ckeditor_extras_configure_single_long_text_field($field_instance_arg, $target_format) {
   list ($entity_type, $bundle, $field_instance_name) = explode(':', $field_instance_arg);
   if (!empty($entity_type) && !empty($bundle) && !empty($field_instance_name)) {
     $field_instance = field_info_instance($entity_type, $field_instance_name, $bundle);
   }
   if (empty($field_instance)) {
-    drupal_set_message(dt('Invalid field instance name.'), 'error');
+    \Drupal::messenger()->addError(dt('Invalid field instance name.'));
     return;
   }
 
@@ -340,14 +339,13 @@ function drush_media_ckeditor_extras_configure_single_long_text_field($field_ins
   }
 
   if (isset($target_format) && !in_array($target_format, $filter_format_formats)) {
-    drupal_set_message(dt('Invalid target format name.'), 'error');
+    \Drupal::messenger()->addError(dt('Invalid target format name.'));
     return;
   }
 
 
   _media_ckeditor_extras_configure_long_text_field_to_limit_format($field_instance, $target_format);
 }
-
 function drush_media_ckeditor_extras_long_text_values_reassign_formats() {
   // Prepare filter format options for user selection.
   $filter_formats = filter_formats();
@@ -383,7 +381,6 @@ function drush_media_ckeditor_extras_long_text_values_reassign_formats() {
   }
   drush_invoke('cc', array('all'));
 }
-
 function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_arg) {
   list ($entity_type, $bundle, $field_instance_name) = explode(':', $field_instance_arg);
   if (!empty($bundle)) {
@@ -393,7 +390,7 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
     $field_instance = field_info_instance($entity_type, $field_instance_name, $bundle);
   }
   if (empty($field_instance)) {
-    drupal_set_message(dt('Invalid field instance name.'), 'error');
+    \Drupal::messenger()->addError(dt('Invalid field instance name.'));
     return;
   }
 
@@ -417,7 +414,9 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
     unset($bundle_field_name);
   }
 
-  $total_query = db_select($field_current_table, 'f')
+  // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+  // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+  $total_query = \Drupal::database()->select($field_current_table, 'f')
     ->condition('f.deleted', 0)
     ->condition('f.entity_type', $entity_type)
     ->condition('f.bundle', $bundle);
@@ -486,7 +485,6 @@ function drush_media_ckeditor_extras_long_text_field_statistics($field_instance_
 
   print PHP_EOL;
 }
-
 function drush_media_ckeditor_extras_long_text_field_statistics_bulk() {
   $field_instances = preg_split ('/$\R?^/m', stream_get_contents(STDIN));
   // Remove empety lines.
@@ -500,14 +498,13 @@ function drush_media_ckeditor_extras_long_text_field_statistics_bulk() {
     drush_media_ckeditor_extras_long_text_field_statistics($field_instance);
   }
 }
-
 function drush_media_ckeditor_extras_long_text_field_reassign_format($field_instance_arg, $source_format, $target_format) {
   list ($entity_type, $bundle, $field_instance_name) = explode(':', $field_instance_arg);
   if (!empty($entity_type) && !empty($bundle) && !empty($field_instance_name)) {
     $field_instance = field_info_instance($entity_type, $field_instance_name, $bundle);
   }
   if (empty($field_instance)) {
-    drupal_set_message(dt('Invalid field instance name.'), 'error');
+    \Drupal::messenger()->addError(dt('Invalid field instance name.'));
     return;
   }
 
@@ -527,7 +524,7 @@ function drush_media_ckeditor_extras_long_text_field_reassign_format($field_inst
   }
 
   if ( (isset($source_format) && !in_array($source_format, $filter_format_formats)) || (isset($target_format) && !in_array($target_format, $filter_format_formats))) {
-    drupal_set_message(dt('Invalid source and/or target format name.'), 'error');
+    \Drupal::messenger()->addError(dt('Invalid source and/or target format name.'));
     return;
   }
 
@@ -535,17 +532,18 @@ function drush_media_ckeditor_extras_long_text_field_reassign_format($field_inst
 
   _media_ckeditor_extras_long_text_field_reassign_text_format($field, array($source_format), $target_format, $entity_type, $bundle);
 }
-
 function drush_media_ckeditor_extras_detect_file_types() {
   $types = file_type_load_all();
   $type = drush_get_option('type', 'default');
   $non_strict  = drush_get_option('non-strict', FALSE);
 
   if (!$non_strict && !isset($types[$type])) {
-    drupal_set_message(dt('@type is not a valid file type.', array('@type' => $type)), 'error');
+    \Drupal::messenger()->addError(dt('@type is not a valid file type.', array('@type' => $type)));
     return;
   }
-  $result = db_select('file_managed', 'f')
+  // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+  // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+  $result = \Drupal::database()->select('file_managed', 'f')
     ->fields('f', array('fid', 'filename'))
     ->condition('type', $type)
     ->execute();
@@ -553,7 +551,7 @@ function drush_media_ckeditor_extras_detect_file_types() {
   $count = 0;
   $total_count = 0;
   foreach ($result as $row) {
-    $file = file_load($row->fid);
+    $file = \Drupal::service('entity_type.manager')->getStorage('file')->load($row->fid);
     $new_type = file_get_type($file);
     if ($type != $new_type) {
       $file->type = $new_type;
@@ -564,20 +562,19 @@ function drush_media_ckeditor_extras_detect_file_types() {
     $total_count++;
   }
 
-  drupal_set_message(dt('@count files has been updated.', array('@count' => $count)));
+  \Drupal::messenger()->addStatus(dt('@count files has been updated.', array('@count' => $count)));
 
   if ($total_count > $count) {
-    drupal_set_message(dt('@count files did not require re-assignment.', array('@count' => $total_count - $count)));
+    \Drupal::messenger()->addStatus(dt('@count files did not require re-assignment.', array('@count' => $total_count - $count)));
   }
 }
-
 function drush_media_ckeditor_extras_long_text_field_identify($field_instance_with_format_arg) {
   list ($entity_type, $bundle, $field_instance_name, $format_name) = explode(':', $field_instance_with_format_arg);
   if (!empty($entity_type) && !empty($bundle) && !empty($field_instance_name)) {
     $field_instance = field_info_instance($entity_type, $field_instance_name, $bundle);
   }
   if (empty($field_instance)) {
-    drupal_set_message(dt('Invalid field instance name.'), 'error');
+    \Drupal::messenger()->addError(dt('Invalid field instance name.'));
     return;
   }
 
@@ -597,7 +594,9 @@ function drush_media_ckeditor_extras_long_text_field_identify($field_instance_wi
   $bundle_field_name = $entity_info['entity keys']['bundle'];
 
   // Prepare and execute query to get all field items using particular text format.
-  $query = db_select($field_current_table, 'f')
+  // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+  // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+  $query = \Drupal::database()->select($field_current_table, 'f')
     ->condition('f.deleted', 0)
     ->condition('f.entity_type', $entity_type);
   $join_conditions = "f.entity_id = n.{$id_field_name}";
@@ -625,7 +624,7 @@ function drush_media_ckeditor_extras_long_text_field_identify($field_instance_wi
     else {
       print dt("Entity id: @id", array('@id' => $row->entity_id ));
     }
-    $entities = entity_load($entity_type, array($row->entity_id));
+    $entities = \Drupal::service('entity_type.manager')->getStorage($entity_type)->load(array($row->entity_id));
     if (count($entities)) {
       $uri = entity_uri($entity_type, reset($entities));
       print dt(', URL: "@url"', array('@url' => $uri['path']));

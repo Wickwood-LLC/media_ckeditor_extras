@@ -77,7 +77,6 @@ function media_ckeditor_extras_settings_form($form, &$form_state) {
 
   return $form;
 }
-
 function theme_media_ckeditor_extras_settings_form_mime_icons(&$variables) {
   $element = $variables['element'];
 
@@ -87,10 +86,10 @@ function theme_media_ckeditor_extras_settings_form_mime_icons(&$variables) {
     $element[$name]['weight']['#attributes']['class'][] = 'icon-order-weight';
     $rows[] = array(
       'data' => array(
-        drupal_render($element[$name]['mime']),
-        drupal_render($element[$name]['icon']),
-        drupal_render($element[$name]['remove']),
-        drupal_render($element[$name]['weight']),
+        \Drupal::service('renderer')->render($element[$name]['mime']),
+        \Drupal::service('renderer')->render($element[$name]['icon']),
+        \Drupal::service('renderer')->render($element[$name]['remove']),
+        \Drupal::service('renderer')->render($element[$name]['weight']),
       ),
       'class' => array('draggable'),
     );
@@ -101,22 +100,18 @@ function theme_media_ckeditor_extras_settings_form_mime_icons(&$variables) {
 
   return $output;
 }
-
 function media_ckeditor_extras_settings_form_add_more_mime_icon_callback($form, $form_state) {
   return $form['mime_icons'];
 }
-
 function media_ckeditor_extras_settings_form_add_more_mime_icon_submit($form, &$form_state) {
   $form_state['storage']['mime_icons'][] = array('mime' => '');
   $form_state['rebuild'] = TRUE;
 }
-
 function media_ckeditor_extras_settings_form_remove_mime_icon_submit($form, &$form_state) {
   list($temp, $index) = explode('_', $form_state['clicked_button']['#name']);
   unset($form_state['storage']['mime_icons'][(int)$index]);
   $form_state['rebuild'] = TRUE;
 }
-
 function media_ckeditor_extras_settings_form_validate($form, &$form_state) {
   if ($form_state['triggering_element']['#name'] != 'save_settings') {
     return;
@@ -127,7 +122,6 @@ function media_ckeditor_extras_settings_form_validate($form, &$form_state) {
     }
   }
 }
-
 function media_ckeditor_extras_settings_form_submit($form, &$form_state) {
   usort($form_state['values']['mime_icons'], function($a, $b){
     if ($a['weight'] == $b['weight']) {
@@ -136,5 +130,5 @@ function media_ckeditor_extras_settings_form_submit($form, &$form_state) {
     return ($a['weight'] < $b['weight']) ? -1 : 1;
   });
   variable_set('mce_mime_icons', $form_state['values']['mime_icons']);
-  drupal_set_message(t('Configuration settings has been saved.'));
+  \Drupal::messenger()->addStatus(t('Configuration settings has been saved.'));
 }

@@ -2,4 +2,4 @@ name: 'Media CKEditor Extras'
 type: module
 description: 'Custom module that modifies the media markup in WYSIWYG to allow for whatever custom functions and behaviors reuired by the site.'
 package: Media
-core: 8.x
+core_version_requirement: ^8 || ^9
