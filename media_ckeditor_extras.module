@@ -26,9 +26,9 @@ function media_ckeditor_extras_fields_by_type_by_bundle($entity_type, $bundle = 
   $fields = field_info_field_map();
   foreach ($fields as $field => $info) {
     if ($info['type'] == $type &&
-        in_array($entity_type, array_keys($info['bundles'])) &&
-        (empty($bundle) || in_array($bundle, $info['bundles'][$entity_type]))
-    ){
+      in_array($entity_type, array_keys($info['bundles'])) &&
+      (empty($bundle) || in_array($bundle, $info['bundles'][$entity_type]))
+    ) {
       $chosen_fields[$field] = $field;
     }
   }
@@ -136,13 +136,22 @@ function media_ckeditor_extras_preprocess_file_entity(&$variables) {
 
           $variables['content']['file']['#image_style'] = $old_file_renderable['#style_name'];
         }
-        if ($variables['content']['file']['#theme'] == 'image_formatter') {
-          $variables['content']['file']['#path']['path'] = $link['url'];
+        if ($variables['content']['file']['#theme'] === 'image_formatter') {
+          $file = &$variables['content']['file']['#path'];
+          $file = is_array($file) ? $file : array();
+          $file['path'] = $link['url'];
+
+          $attributes = &$file['options']['attributes'];
+          $attributes = is_array($attributes) ? $attributes : array();
+
           if (!empty($link['attributes']['target'])) {
-            $variables['content']['file']['#path']['options']['attributes']['target'] = $link['attributes']['target'];
+            $attributes['target'] = $link['attributes']['target'];
           }
+
           if (!empty($link['attributes']['class'])) {
-            $variables['content']['file']['#path']['options']['attributes']['class'][] = $link['attributes']['class'];
+            $class = &$attributes['class'];
+            $class = is_array($class) ? $class : array();
+            $class[] = $link['attributes']['class'];
           }
         }
       }
@@ -356,7 +365,7 @@ function media_ckeditor_extras_entity_view($entity, $type, $view_mode, $langcode
  * Implements hook_init()
  */
 function media_ckeditor_extras_init() {
-  if (arg(0) == 'node' && is_numeric(arg(1)) && empty(arg(2))){
+  if (arg(0) == 'node' && is_numeric(arg(1)) && empty(arg(2))) {
     // We can think about improving this part. Instead of loading 'CSS Class' field
     // styles always. But we need to keep a map of pairs 'entity_type:entity_id' => field
     // So, we can load these styles as required.
@@ -431,7 +440,7 @@ function template_preprocess_mce_icon_link(&$variables) {
   $icon = NULL;
   //file_entity_match_mimetypes
   foreach (variable_get('mce_mime_icons', array()) as $mime_icon) {
-    $mimes = preg_split ('/$\R?^/m', $mime_icon['mime']);
+    $mimes = preg_split('/$\R?^/m', $mime_icon['mime']);
     if (file_entity_match_mimetypes($variables['file']->filemime, $mimes)) {
       $icon = $mime_icon['icon'];
       break;
