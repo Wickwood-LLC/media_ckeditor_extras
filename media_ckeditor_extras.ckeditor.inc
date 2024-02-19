@@ -14,7 +14,7 @@ function media_ckeditor_extras_ckeditor_plugin() {
     'media_ckeditor_extras' => array(
       'name' => 'media_ckeditor_extras',
       'desc' => t('Media CKEditor Extras'),
-      'path' => '%base_path%' . drupal_get_path('module', 'media_ckeditor_extras') . '/editor_plugin/',
+      'path' => '%base_path%' . \Drupal::service('extension.list.module')->getPath('media_ckeditor_extras') . '/editor_plugin/',
       'default' => 'f',
     )
   );
